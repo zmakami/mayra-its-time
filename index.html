@@ -6,13 +6,12 @@
   <title>Último Nivel</title>
   <style>
     :root{
-      --bg:#06110d;         /* verde oscuro profundo */
-      --panel:#081a14;      /* panel */
-      --ink:#e7fff4;        /* texto */
-      --muted:#b7d9c9;      /* texto suave */
-      --line:#0e2f25;       /* borde */
-      --accent:#31c48d;     /* verde bonito */
-      --accent2:#0ea5a5;    /* toque teal */
+      --bg:#06110d;
+      --panel:#081a14;
+      --ink:#e7fff4;
+      --muted:#b7d9c9;
+      --line:#0e2f25;
+      --accent:#31c48d;
     }
     *{box-sizing:border-box}
     body{
@@ -23,11 +22,7 @@
       display:flex; align-items:center; justify-content:center;
       padding:24px;
     }
-    .shell{
-      width:min(720px, 100%);
-      display:flex; flex-direction:column; gap:14px;
-      align-items:center;
-    }
+    .shell{ width:min(720px, 100%); display:flex; flex-direction:column; gap:14px; align-items:center; }
     .card{
       width:100%;
       background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
@@ -42,7 +37,7 @@
       gap:10px; margin-bottom:10px;
       color:var(--muted);
       font-size:12px;
-      letter-spacing:.12em;
+      letter-spacing:.14em;
       text-transform:uppercase;
     }
     .dot{width:8px;height:8px;border-radius:999px;background:var(--accent); box-shadow:0 0 18px rgba(49,196,141,.55);}
@@ -64,10 +59,7 @@
     }
     button:hover{background: rgba(49,196,141,.20); border-color:#1f5a45}
     button:active{transform: translateY(1px)}
-    button.secondary{
-      background: transparent;
-      color:var(--muted);
-    }
+    button.secondary{ background: transparent; color:var(--muted); }
     button.secondary:hover{border-color:#1f5a45; background: rgba(255,255,255,.03); color:var(--ink)}
     .input{
       width:100%;
@@ -95,7 +87,6 @@
     .ok{color:#7CFCB2; font-weight:800}
     .no{color:#ffb3b3; font-weight:800}
     .divider{height:1px; background: var(--line); margin:14px 0}
-    a{color:var(--accent); text-decoration:none}
   </style>
 </head>
 <body>
@@ -104,176 +95,287 @@
       <div class="topbar">
         <div style="display:flex;align-items:center;gap:10px;">
           <div class="dot"></div>
-          <div id="progress">Pantalla 1</div>
+          <div id="progress">1/1</div>
         </div>
-        <div id="tag">Último nivel</div>
+        <div id="tag">último nivel</div>
       </div>
 
       <h1 id="title"></h1>
       <div id="content"></div>
-
       <div class="btns" id="btns"></div>
     </div>
   </div>
 
 <script>
-/* =========================
-   CONFIG RÁPIDA (EDITA AQUÍ)
-   ========================= */
+/* ====== EDITA AQUÍ ====== */
 const NAME = "Mayra";
-const YOU  = "Dani";
 
-/* =========================
-   MOTOR DEL JUEGO
-   ========================= */
+/* ====== STATE ====== */
 const state = {
   step: 0,
-  key: null,       // clave final derivada del juego
+  q: 0,
   score: 0,
-  attempt: 0
+  code: null
 };
 
 function el(id){ return document.getElementById(id); }
-
 function normalize(s){
-  return (s||"")
-    .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")  // quita acentos
-    .replace(/[^\w\s]/g,"")                          // quita signos
+  return (s||"").toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^\w\s]/g,"")
     .replace(/\s+/g," ")
     .trim();
 }
 
-// Pequeño hash “humano”: genera una clave de 4 letras a partir de una frase
-function makeKey(phrase){
-  const n = normalize(phrase);
+// Clave final (no obvia, pero romántica)
+function makeCode(a,b,c){
+  // a,b,c son respuestas/elecciones
+  const base = `${a}|${b}|${c}|${NAME}`;
   let sum = 0;
-  for (let i=0;i<n.length;i++){
-    sum = (sum + n.charCodeAt(i) * (i+1)) % 10000;
-  }
-  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // sin I/O para que no confunda
-  const a = letters[(sum      ) % letters.length];
-  const b = letters[(sum >> 2 ) % letters.length];
-  const c = letters[(sum >> 4 ) % letters.length];
-  const d = letters[(sum >> 6 ) % letters.length];
-  return `${a}${b}${c}${d}`;
+  for (let i=0;i<base.length;i++) sum = (sum + base.charCodeAt(i)*(i+3)) % 9973;
+  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const code =
+    letters[(sum     ) % letters.length] +
+    letters[(sum>>2  ) % letters.length] +
+    letters[(sum>>4  ) % letters.length] +
+    letters[(sum>>6  ) % letters.length];
+  return code;
 }
 
+/* ====== HELPERS ====== */
+function go(n){ state.step = n; render(); }
+
+function setFeedback(msg, good=false){
+  const fb = el("feedback");
+  if (!fb) return;
+  fb.innerHTML = good ? `<span class="ok">Listo.</span> ${msg}` : msg;
+}
+
+function render(){
+  const s = steps[state.step];
+  el("tag").textContent = s.tag || "último nivel";
+  el("title").textContent = s.title || "";
+  el("content").innerHTML = s.html || "";
+
+  // contador solo num
+  el("progress").textContent = `${state.step+1}/${steps.length}`;
+
+  const btns = el("btns");
+  btns.innerHTML = "";
+  (s.buttons||[]).forEach(b=>{
+    const btn = document.createElement("button");
+    btn.textContent = b.text;
+    if (b.secondary) btn.classList.add("secondary");
+    btn.onclick = b.action ? b.action : () => go(b.next);
+    btns.appendChild(btn);
+  });
+}
+
+/* ======================
+   6 PREGUNTAS SMART/CUTE
+   ====================== */
+
+/* Q1 */
+function q1(choice){
+  state.a1 = choice; // guardar
+  state.score++;
+  go(2);
+}
+
+/* Q2 */
+function q2(choice){
+  state.a2 = choice;
+  state.score++;
+  go(3);
+}
+
+/* Q3 (orden) */
+function q3check(){
+  const ans = normalize(el("ans3").value);
+  // Respuesta esperada: "contigo se siente facil" (acepta variaciones)
+  const ok = ans.includes("contigo") && (ans.includes("facil") || ans.includes("bonito")) && ans.includes("se siente");
+  if (ok){
+    state.score++;
+    go(4);
+  } else {
+    setFeedback("Casi 😏 Tip: usa “Se siente…” y mete “contigo” + “fácil/bonito”.");
+  }
+}
+
+/* Q4 (elige la verdadera) */
+function q4(choice){
+  state.a4 = choice;
+  state.score++;
+  go(5);
+}
+
+/* Q5 (mini “lógica” romántica, sin mates) */
+function q5(choice){
+  state.a5 = choice;
+  state.score++;
+  // genera código basado en 3 elecciones para que se sienta “hack”
+  state.code = makeCode(state.a1, state.a2, state.a4);
+  go(6);
+}
+
+/* Q6 (verificación del código) */
+function q6check(){
+  const ans = (el("ans6").value || "").toUpperCase().trim();
+  const fb = el("feedback");
+  if (ans === state.code){
+    fb.innerHTML = `<span class="ok">Acceso concedido.</span>`;
+    setTimeout(()=>go(7), 450);
+  } else {
+    fb.innerHTML = `<span class="no">Nope.</span> Está cerquita… vuelve a la pantalla anterior y cópialo tal cual 😌`;
+  }
+}
+
+/* ====== SCREENS ====== */
 const steps = [
   {
-    tag: "Inicio",
+    tag: "inicio",
     title: `Hola, ${NAME}.`,
     html: `
-      <p class="muted">Minimal. Sin ruido. Como se siente esto.</p>
-      <p>Si llegaste aquí es porque confiaste en mí un ratito.</p>
-      <p>Este es un juego corto… pero <b>sí está más “smart”</b>. 😌</p>
+      <p class="muted">Minimal. Verde oscuro. Sin drama.</p>
+      <p>Te hice un jueguito corto. No es examen… es <b>nosotros</b>.</p>
       <div class="divider"></div>
       <p class="muted">Reglas:</p>
-      <p class="muted">1) No te saltes nada.<br>2) Si te atoras, hay pista.<br>3) El final vale la pena.</p>
+      <p class="muted">1) No te saltes nada.<br>2) Si te ríes, vas bien.<br>3) El final vale la pena.</p>
     `,
     buttons: [{ text:"Empezar", next:1 }]
   },
 
-  // NIVEL 1: lógica / patrón
+  /* Pregunta 1/6 */
   {
-    tag: "Nivel 1",
-    title: "Patrón",
+    tag: "pregunta 1/6",
+    title: "Modo Mayra activado 😌",
     html: `
-      <p>Elige la opción que completa la secuencia:</p>
-      <p><b>2 — 3 — 5 — 8 — 13 — ?</b></p>
-      <p class="muted">No te preocupes, no es examen. Solo quiero ver si eres team “cerebrito” 😏</p>
+      <p>Elige la opción correcta:</p>
+      <p><b>Si esto fuera una relación en “modo fácil”, sería porque…</b></p>
       <div id="feedback" class="hint"></div>
     `,
     buttons: [
-      { text:"21", action: () => correct(2, "Bien 😌") },
-      { text:"20", action: () => wrong("Casi. Piensa en sumar los dos anteriores.") },
-      { text:"18", action: () => wrong("Nope. Pista: 2+3=5, 3+5=8…") },
-      { text:"Pista", action: () => hint("Es Fibonacci: cada número es la suma de los dos anteriores.") , secondary:true}
+      { text:"Contigo no hay presión", action: () => q1("nopresion") },
+      { text:"Me dejas ser yo", action: () => q1("seryo") },
+      { text:"Las dos (obvio)", action: () => q1("lasdos") }
     ]
   },
 
-  // NIVEL 2: anagrama/ordenar palabras
+  /* Pregunta 2/6 */
   {
-    tag: "Nivel 2",
-    title: "Orden",
+    tag: "pregunta 2/6",
+    title: "Pregunta capciosa 😏",
     html: `
-      <p>Ordena mentalmente estas 4 palabras para formar una frase que tenga sentido:</p>
+      <p><b>¿Cuál de estas es una señal clarísima de que me gustas?</b></p>
+      <p class="muted">(solo una es correcta… según yo)</p>
+      <div id="feedback" class="hint"></div>
+    `,
+    buttons: [
+      { text:"Hago planes contigo", action: () => q2("planes") },
+      { text:"Te presumo sin decir que te presumo", action: () => q2("presumo") },
+      { text:"Todas las anteriores", action: () => q2("todas") }
+    ]
+  },
+
+  /* Pregunta 3/6 (texto) */
+  {
+    tag: "pregunta 3/6",
+    title: "Completa la frase",
+    html: `
+      <p>Escribe una frase corta que suene a nosotros:</p>
       <div class="pillrow">
+        <div class="pill">Se siente…</div>
         <div class="pill">contigo</div>
-        <div class="pill">paz</div>
-        <div class="pill">se</div>
-        <div class="pill">siente</div>
+        <div class="pill">fácil</div>
+        <div class="pill">bonito</div>
       </div>
-      <input class="input" id="ans2" placeholder="Escríbelo aquí…" autocomplete="off" />
-      <div id="feedback" class="hint"></div>
+      <input class="input" id="ans3" placeholder="Ej: Se siente fácil contigo…" autocomplete="off" />
+      <div id="feedback" class="hint">Tip: no tiene que ser perfecta, solo real.</div>
     `,
     buttons: [
-      { text:"Comprobar", action: check2 },
-      { text:"Pista", action: () => hint("Empieza con: “Se…”") , secondary:true}
+      { text:"Comprobar", action: q3check },
+      { text:"Dame pista", action: () => setFeedback("Prueba: “Se siente fácil y bonito contigo.”", true), secondary:true }
     ]
   },
 
-  // NIVEL 3: clave derivada (más “smart”)
+  /* Pregunta 4/6 */
   {
-    tag: "Nivel 3",
-    title: "Clave",
+    tag: "pregunta 4/6",
+    title: "Elige la verdad (sin miedo)",
     html: `
-      <p>Ok. Última prueba antes del final.</p>
-      <p class="muted">Te voy a pedir una frase corta. Con esa frase el juego genera una clave.</p>
-      <p><b>Escribe una frase de 4 a 8 palabras que describa lo que se siente estar juntos.</b></p>
-      <input class="input" id="ans3" placeholder="Ej: 'Se siente fácil, bonito y real'…" autocomplete="off" />
-      <div id="keybox" class="hint"></div>
+      <p><b>Lo que más me gusta de estar contigo es…</b></p>
+      <div class="muted">Ojo: todas son bonitas, pero una es la más real.</div>
       <div id="feedback" class="hint"></div>
     `,
     buttons: [
-      { text:"Generar clave", action: genKey },
-      { text:"Pista", action: () => hint("Puede ser algo como: “Se siente natural y en paz”.") , secondary:true}
+      { text:"Que todo se siente natural", action: () => q4("natural") },
+      { text:"Que me das paz", action: () => q4("paz") },
+      { text:"Que me dan ganas de quedarme", action: () => q4("quedarme") }
     ]
   },
 
-  // VALIDACIÓN CLAVE (más difícil)
+  /* Pregunta 5/6 (smart romántica) */
   {
-    tag: "Checkpoint",
-    title: "Verificación",
+    tag: "pregunta 5/6",
+    title: "Desbloqueo 😌",
     html: `
-      <p>Ahora escribe la <b>clave</b> que te salió (4 letras). 😌</p>
-      <input class="input" id="ans4" placeholder="ABCD" autocomplete="off" />
+      <p>Elige el “power-up” correcto:</p>
+      <p class="muted">Si estuviéramos jugando y te doy un botón para subir de nivel, diría:</p>
       <div id="feedback" class="hint"></div>
-      <p class="muted">Sí, lo sé… soy extra. Pero es parte del encanto.</p>
     `,
     buttons: [
-      { text:"Entrar", action: check4 },
-      { text:"Volver a ver clave", action: () => go(3), secondary:true }
+      { text:"Más calma, más nosotros", action: () => q5("calma") },
+      { text:"Más besos, menos miedo", action: () => q5("besos") },
+      { text:"Más tú aquí, conmigo", action: () => q5("contigo") }
     ]
   },
 
-  // FUERA DE JUEGO (romántico suave)
+  /* Pregunta 6/6 (código) */
   {
-    tag: "Fuera de juego",
+    tag: "pregunta 6/6",
+    title: "Último filtro (smart pero cute)",
+    html: `
+      <p>Ok. Generé un código final con tus respuestas.</p>
+      <p class="muted">Cópialo EXACTO para entrar al último nivel:</p>
+      <p style="font-size:20px;letter-spacing:.25em;color:var(--accent);font-weight:900;margin:8px 0;">
+        <span id="code">${state.code || "----"}</span>
+      </p>
+      <input class="input" id="ans6" placeholder="Escribe el código aquí…" autocomplete="off" />
+      <div id="feedback" class="hint">Tip: sin espacios.</div>
+    `,
+    buttons: [
+      { text:"Entrar", action: q6check },
+      { text:"Repetir código", action: () => { el("ans6").value=""; }, secondary:true }
+    ]
+  },
+
+  /* Fuera de juego */
+  {
+    tag: "fuera de juego",
     title: "Ok… ya en serio.",
     html: `
-      <p>Gracias por jugarlo de verdad.</p>
-      <p>La neta… me gusta cómo se siente estar contigo. Se siente <b>fácil</b>, se siente <b>bonito</b>, se siente <b>real</b>.</p>
-      <p>No quiero correr ni hacer un show. Solo quería decirte esto de una forma que se sintiera <i>nuestra</i>.</p>
+      <p>Gracias por jugarlo como yo quería que lo vivieras: con calma.</p>
+      <p>Me gusta cómo se siente estar contigo. Me gusta que no se siente forzado, se siente <b>real</b>.</p>
+      <p>Y la neta… me dan ganas de seguir construyendo esto bonito, contigo.</p>
     `,
-    buttons: [{ text:"Siguiente", next:6 }]
+    buttons: [{ text:"Siguiente", next:8 }]
   },
 
-  // FINAL
+  /* Final */
   {
-    tag: "Final",
+    tag: "final",
     title: "Último nivel",
     html: `
       <p class="muted">Respira.</p>
       <p style="font-size:18px"><b>${NAME}… ¿quieres ser mi novia?</b></p>
     `,
     buttons: [
-      { text:"Sí 💚", next:7 },
-      { text:"Obvio sí 😌", next:7 }
+      { text:"Sí 💚", next:9 },
+      { text:"Obvio sí 😌", next:9 }
     ]
   },
 
-  // CELEBRACIÓN
+  /* Celebración */
   {
     tag: "✅",
     title: "Checkpoint desbloqueado",
@@ -287,89 +389,6 @@ const steps = [
     buttons: [{ text:"Fin", action: () => alert("💚") }]
   }
 ];
-
-function render(){
-  const s = steps[state.step];
-  el("progress").textContent = `Pantalla ${state.step+1} / ${steps.length}`;
-  el("tag").textContent = s.tag || "";
-  el("title").textContent = s.title || "";
-  el("content").innerHTML = s.html || "";
-
-  const btns = el("btns");
-  btns.innerHTML = "";
-  (s.buttons||[]).forEach(b=>{
-    const btn = document.createElement("button");
-    btn.textContent = b.text;
-    if (b.secondary) btn.classList.add("secondary");
-    btn.onclick = b.action ? b.action : () => go(b.next);
-    btns.appendChild(btn);
-  });
-}
-
-function go(n){
-  state.step = n;
-  render();
-}
-
-function hint(msg){
-  const fb = el("feedback");
-  if (fb) fb.innerHTML = `💡 ${msg}`;
-}
-
-function wrong(msg){
-  state.attempt++;
-  const fb = el("feedback");
-  if (fb) fb.innerHTML = `<span class="no">Nope.</span> ${msg}`;
-}
-
-function correct(nextStep, msg){
-  state.score++;
-  const fb = el("feedback");
-  if (fb) fb.innerHTML = `<span class="ok">Bien.</span> ${msg}`;
-  setTimeout(()=>go(nextStep), 450);
-}
-
-/* ========== NIVEL 2 ========== */
-function check2(){
-  const ans = normalize(el("ans2").value);
-  // aceptamos variaciones razonables
-  const ok = (ans === "se siente paz contigo") || (ans === "se siente paz contigo") ||
-             (ans === "se siente contigo paz") || (ans.includes("se siente") && ans.includes("contigo") && ans.includes("paz"));
-  if (ok) correct(3, "Eso. 🫶");
-  else wrong("Intenta que suene como una frase real.");
-}
-
-/* ========== NIVEL 3 ========== */
-function genKey(){
-  const phrase = el("ans3").value || "";
-  const n = normalize(phrase);
-  if (n.split(" ").filter(Boolean).length < 4){
-    wrong("Pon una frase de mínimo 4 palabras.");
-    return;
-  }
-  state.key = makeKey(phrase);
-  const box = el("keybox");
-  box.innerHTML = `Tu clave: <b style="letter-spacing:.25em;color:var(--accent)">${state.key}</b>`;
-  el("feedback").innerHTML = `<span class="ok">Listo.</span> Ahora guarda esa clave.`;
-  setTimeout(()=>go(4), 900);
-}
-
-/* ========== CHECKPOINT ========== */
-function check4(){
-  const ans = normalize(el("ans4").value).toUpperCase();
-  const fb = el("feedback");
-  if (!state.key){
-    fb.innerHTML = `<span class="no">Ups.</span> Primero genera la clave.`;
-    return;
-  }
-  // más estricto: debe ser exacta
-  if (ans === state.key){
-    fb.innerHTML = `<span class="ok">Acceso concedido.</span>`;
-    setTimeout(()=>go(5), 500);
-  } else {
-    wrong("Clave incorrecta. Vuelve a la anterior si quieres verla otra vez.");
-  }
-}
 
 render();
 </script>
