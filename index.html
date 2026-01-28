@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Último Nivel</title>
+
   <style>
     :root{
       --bg:#06110d;
-      --panel:#081a14;
       --ink:#e7fff4;
       --muted:#b7d9c9;
       --line:#0e2f25;
@@ -16,380 +16,217 @@
     *{box-sizing:border-box}
     body{
       margin:0; min-height:100vh;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
       background: radial-gradient(1200px 700px at 50% 35%, #0a2a1f 0%, var(--bg) 55%, #030a07 100%);
       color:var(--ink);
       display:flex; align-items:center; justify-content:center;
       padding:24px;
     }
-    .shell{ width:min(720px, 100%); display:flex; flex-direction:column; gap:14px; align-items:center; }
     .card{
-      width:100%;
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+      width:min(720px,100%);
+      background: rgba(255,255,255,.03);
       border:1px solid var(--line);
       border-radius:20px;
       padding:22px;
       box-shadow: 0 20px 60px rgba(0,0,0,.45);
-      backdrop-filter: blur(8px);
     }
     .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px; margin-bottom:10px;
-      color:var(--muted);
-      font-size:12px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
+      display:flex; justify-content:space-between; align-items:center;
+      font-size:12px; letter-spacing:.15em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:10px;
     }
-    .dot{width:8px;height:8px;border-radius:999px;background:var(--accent); box-shadow:0 0 18px rgba(49,196,141,.55);}
-    h1{margin:0 0 10px; font-size:22px; letter-spacing:.2px;}
-    p{margin:10px 0; line-height:1.55; font-size:16px; color:var(--ink);}
-    .muted{color:var(--muted); font-size:14px}
-    .btns{display:grid; gap:10px; margin-top:16px;}
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background:var(--accent);
+      box-shadow:0 0 16px rgba(49,196,141,.6);
+      display:inline-block;margin-right:8px;
+    }
+    h1{margin:0 0 10px;font-size:22px}
+    p{margin:10px 0;line-height:1.55}
+    .muted{color:var(--muted);font-size:14px}
+    .btns{display:grid;gap:10px;margin-top:18px}
     button{
-      appearance:none;
       border:1px solid var(--line);
-      background: rgba(49,196,141,.14);
+      background: rgba(49,196,141,.15);
       color:var(--ink);
-      padding:13px 14px;
+      padding:14px;
       border-radius:14px;
       font-weight:700;
-      font-size:15px;
       cursor:pointer;
-      transition: transform .06s ease, background .2s ease, border-color .2s ease;
     }
-    button:hover{background: rgba(49,196,141,.20); border-color:#1f5a45}
-    button:active{transform: translateY(1px)}
-    button.secondary{ background: transparent; color:var(--muted); }
-    button.secondary:hover{border-color:#1f5a45; background: rgba(255,255,255,.03); color:var(--ink)}
+    button:hover{background: rgba(49,196,141,.25)}
     .input{
-      width:100%;
-      margin-top:12px;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.18);
-      color:var(--ink);
-      outline:none;
-      font-size:16px;
+      width:100%;padding:12px;margin-top:12px;
+      border-radius:12px;border:1px solid var(--line);
+      background: rgba(0,0,0,.2);color:var(--ink);
     }
-    .input:focus{border-color:#1f5a45; box-shadow:0 0 0 4px rgba(49,196,141,.15)}
-    .pillrow{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
-    .pill{
-      border:1px solid var(--line);
-      background: rgba(14,47,37,.45);
-      color:var(--muted);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:13px;
-      user-select:none;
-    }
-    .hint{margin-top:10px; font-size:13px; color:var(--muted)}
-    .ok{color:#7CFCB2; font-weight:800}
-    .no{color:#ffb3b3; font-weight:800}
-    .divider{height:1px; background: var(--line); margin:14px 0}
+    .hint{margin-top:10px;font-size:13px;color:var(--muted)}
+    .ok{color:#7CFCB2;font-weight:700}
+    .no{color:#ffb3b3;font-weight:700}
   </style>
 </head>
-<body>
-  <div class="shell">
-    <div class="card">
-      <div class="topbar">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div class="dot"></div>
-          <div id="progress">1/1</div>
-        </div>
-        <div id="tag">último nivel</div>
-      </div>
 
-      <h1 id="title"></h1>
-      <div id="content"></div>
-      <div class="btns" id="btns"></div>
-    </div>
+<body>
+
+<!-- 🎵 AUDIO -->
+<audio id="bgm" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="card">
+  <div class="topbar">
+    <div><span class="dot"></span><span id="progress">1/1</span></div>
+    <div id="tag">último nivel</div>
   </div>
 
+  <h1 id="title"></h1>
+  <div id="content"></div>
+  <div class="btns" id="btns"></div>
+</div>
+
 <script>
-/* ====== EDITA AQUÍ ====== */
+/* ===== CONFIG ===== */
 const NAME = "Mayra";
 
-/* ====== STATE ====== */
-const state = {
-  step: 0,
-  q: 0,
-  score: 0,
-  code: null
-};
+/* ===== MUSIC CONTROL ===== */
+const bgm = document.getElementById("bgm");
+let musicStarted = false;
 
-function el(id){ return document.getElementById(id); }
+function startMusic(){
+  if (musicStarted) return;
+  musicStarted = true;
+  bgm.volume = 0;
+  bgm.play().catch(()=>{});
+  let v = 0;
+  const fade = setInterval(()=>{
+    v += 0.02;
+    bgm.volume = Math.min(v, 0.25);
+    if (v >= 0.25) clearInterval(fade);
+  }, 120);
+}
+
+/* ===== GAME ===== */
+let step = 0;
+let code = "";
+
+function el(id){return document.getElementById(id);}
+function go(n){step=n;render();}
+
 function normalize(s){
   return (s||"").toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^\w\s]/g,"")
-    .replace(/\s+/g," ")
-    .trim();
+    .replace(/[^\w\s]/g,"").trim();
 }
 
-// Clave final (no obvia, pero romántica)
-function makeCode(a,b,c){
-  // a,b,c son respuestas/elecciones
-  const base = `${a}|${b}|${c}|${NAME}`;
-  let sum = 0;
-  for (let i=0;i<base.length;i++) sum = (sum + base.charCodeAt(i)*(i+3)) % 9973;
-  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-  const code =
-    letters[(sum     ) % letters.length] +
-    letters[(sum>>2  ) % letters.length] +
-    letters[(sum>>4  ) % letters.length] +
-    letters[(sum>>6  ) % letters.length];
-  return code;
-}
-
-/* ====== HELPERS ====== */
-function go(n){ state.step = n; render(); }
-
-function setFeedback(msg, good=false){
-  const fb = el("feedback");
-  if (!fb) return;
-  fb.innerHTML = good ? `<span class="ok">Listo.</span> ${msg}` : msg;
-}
-
-function render(){
-  const s = steps[state.step];
-  el("tag").textContent = s.tag || "último nivel";
-  el("title").textContent = s.title || "";
-  el("content").innerHTML = s.html || "";
-
-  // contador solo num
-  el("progress").textContent = `${state.step+1}/${steps.length}`;
-
-  const btns = el("btns");
-  btns.innerHTML = "";
-  (s.buttons||[]).forEach(b=>{
-    const btn = document.createElement("button");
-    btn.textContent = b.text;
-    if (b.secondary) btn.classList.add("secondary");
-    btn.onclick = b.action ? b.action : () => go(b.next);
-    btns.appendChild(btn);
-  });
-}
-
-/* ======================
-   6 PREGUNTAS SMART/CUTE
-   ====================== */
-
-/* Q1 */
-function q1(choice){
-  state.a1 = choice; // guardar
-  state.score++;
-  go(2);
-}
-
-/* Q2 */
-function q2(choice){
-  state.a2 = choice;
-  state.score++;
-  go(3);
-}
-
-/* Q3 (orden) */
-function q3check(){
-  const ans = normalize(el("ans3").value);
-  // Respuesta esperada: "contigo se siente facil" (acepta variaciones)
-  const ok = ans.includes("contigo") && (ans.includes("facil") || ans.includes("bonito")) && ans.includes("se siente");
-  if (ok){
-    state.score++;
-    go(4);
-  } else {
-    setFeedback("Casi 😏 Tip: usa “Se siente…” y mete “contigo” + “fácil/bonito”.");
-  }
-}
-
-/* Q4 (elige la verdadera) */
-function q4(choice){
-  state.a4 = choice;
-  state.score++;
-  go(5);
-}
-
-/* Q5 (mini “lógica” romántica, sin mates) */
-function q5(choice){
-  state.a5 = choice;
-  state.score++;
-  // genera código basado en 3 elecciones para que se sienta “hack”
-  state.code = makeCode(state.a1, state.a2, state.a4);
-  go(6);
-}
-
-/* Q6 (verificación del código) */
-function q6check(){
-  const ans = (el("ans6").value || "").toUpperCase().trim();
-  const fb = el("feedback");
-  if (ans === state.code){
-    fb.innerHTML = `<span class="ok">Acceso concedido.</span>`;
-    setTimeout(()=>go(7), 450);
-  } else {
-    fb.innerHTML = `<span class="no">Nope.</span> Está cerquita… vuelve a la pantalla anterior y cópialo tal cual 😌`;
-  }
-}
-
-/* ====== SCREENS ====== */
 const steps = [
-  {
-    tag: "inicio",
-    title: `Hola, ${NAME}.`,
-    html: `
-      <p class="muted">Minimal. Verde oscuro. Sin drama.</p>
-      <p>Te hice un jueguito corto. No es examen… es <b>nosotros</b>.</p>
-      <div class="divider"></div>
-      <p class="muted">Reglas:</p>
-      <p class="muted">1) No te saltes nada.<br>2) Si te ríes, vas bien.<br>3) El final vale la pena.</p>
-    `,
-    buttons: [{ text:"Empezar", next:1 }]
-  },
-
-  /* Pregunta 1/6 */
-  {
-    tag: "pregunta 1/6",
-    title: "Modo Mayra activado 😌",
-    html: `
-      <p>Elige la opción correcta:</p>
-      <p><b>Si esto fuera una relación en “modo fácil”, sería porque…</b></p>
-      <div id="feedback" class="hint"></div>
-    `,
-    buttons: [
-      { text:"Contigo no hay presión", action: () => q1("nopresion") },
-      { text:"Me dejas ser yo", action: () => q1("seryo") },
-      { text:"Las dos (obvio)", action: () => q1("lasdos") }
-    ]
-  },
-
-  /* Pregunta 2/6 */
-  {
-    tag: "pregunta 2/6",
-    title: "Pregunta capciosa 😏",
-    html: `
-      <p><b>¿Cuál de estas es una señal clarísima de que me gustas?</b></p>
-      <p class="muted">(solo una es correcta… según yo)</p>
-      <div id="feedback" class="hint"></div>
-    `,
-    buttons: [
-      { text:"Hago planes contigo", action: () => q2("planes") },
-      { text:"Te presumo sin decir que te presumo", action: () => q2("presumo") },
-      { text:"Todas las anteriores", action: () => q2("todas") }
-    ]
-  },
-
-  /* Pregunta 3/6 (texto) */
-  {
-    tag: "pregunta 3/6",
-    title: "Completa la frase",
-    html: `
-      <p>Escribe una frase corta que suene a nosotros:</p>
-      <div class="pillrow">
-        <div class="pill">Se siente…</div>
-        <div class="pill">contigo</div>
-        <div class="pill">fácil</div>
-        <div class="pill">bonito</div>
-      </div>
-      <input class="input" id="ans3" placeholder="Ej: Se siente fácil contigo…" autocomplete="off" />
-      <div id="feedback" class="hint">Tip: no tiene que ser perfecta, solo real.</div>
-    `,
-    buttons: [
-      { text:"Comprobar", action: q3check },
-      { text:"Dame pista", action: () => setFeedback("Prueba: “Se siente fácil y bonito contigo.”", true), secondary:true }
-    ]
-  },
-
-  /* Pregunta 4/6 */
-  {
-    tag: "pregunta 4/6",
-    title: "Elige la verdad (sin miedo)",
-    html: `
-      <p><b>Lo que más me gusta de estar contigo es…</b></p>
-      <div class="muted">Ojo: todas son bonitas, pero una es la más real.</div>
-      <div id="feedback" class="hint"></div>
-    `,
-    buttons: [
-      { text:"Que todo se siente natural", action: () => q4("natural") },
-      { text:"Que me das paz", action: () => q4("paz") },
-      { text:"Que me dan ganas de quedarme", action: () => q4("quedarme") }
-    ]
-  },
-
-  /* Pregunta 5/6 (smart romántica) */
-  {
-    tag: "pregunta 5/6",
-    title: "Desbloqueo 😌",
-    html: `
-      <p>Elige el “power-up” correcto:</p>
-      <p class="muted">Si estuviéramos jugando y te doy un botón para subir de nivel, diría:</p>
-      <div id="feedback" class="hint"></div>
-    `,
-    buttons: [
-      { text:"Más calma, más nosotros", action: () => q5("calma") },
-      { text:"Más besos, menos miedo", action: () => q5("besos") },
-      { text:"Más tú aquí, conmigo", action: () => q5("contigo") }
-    ]
-  },
-
-  /* Pregunta 6/6 (código) */
-  {
-    tag: "pregunta 6/6",
-    title: "Último filtro (smart pero cute)",
-    html: `
-      <p>Ok. Generé un código final con tus respuestas.</p>
-      <p class="muted">Cópialo EXACTO para entrar al último nivel:</p>
-      <p style="font-size:20px;letter-spacing:.25em;color:var(--accent);font-weight:900;margin:8px 0;">
-        <span id="code">${state.code || "----"}</span>
-      </p>
-      <input class="input" id="ans6" placeholder="Escribe el código aquí…" autocomplete="off" />
-      <div id="feedback" class="hint">Tip: sin espacios.</div>
-    `,
-    buttons: [
-      { text:"Entrar", action: q6check },
-      { text:"Repetir código", action: () => { el("ans6").value=""; }, secondary:true }
-    ]
-  },
-
-  /* Fuera de juego */
-  {
-    tag: "fuera de juego",
-    title: "Ok… ya en serio.",
-    html: `
-      <p>Gracias por jugarlo como yo quería que lo vivieras: con calma.</p>
-      <p>Me gusta cómo se siente estar contigo. Me gusta que no se siente forzado, se siente <b>real</b>.</p>
-      <p>Y la neta… me dan ganas de seguir construyendo esto bonito, contigo.</p>
-    `,
-    buttons: [{ text:"Siguiente", next:8 }]
-  },
-
-  /* Final */
-  {
-    tag: "final",
-    title: "Último nivel",
-    html: `
-      <p class="muted">Respira.</p>
-      <p style="font-size:18px"><b>${NAME}… ¿quieres ser mi novia?</b></p>
-    `,
-    buttons: [
-      { text:"Sí 💚", next:9 },
-      { text:"Obvio sí 😌", next:9 }
-    ]
-  },
-
-  /* Celebración */
-  {
-    tag: "✅",
-    title: "Checkpoint desbloqueado",
-    html: `
-      <p class="ok">Logro desbloqueado: <b>Novios</b> 💚</p>
-      <p class="muted">Recompensa:</p>
-      <p>1) Abrazo<br>2) Beso<br>3) Seguimos escribiendo esto… con calma y con intención.</p>
-      <div class="divider"></div>
-      <p class="muted">Fin del juego. Inicio de lo bueno.</p>
-    `,
-    buttons: [{ text:"Fin", action: () => alert("💚") }]
-  }
+{
+  tag:"inicio",
+  title:`Hola, ${NAME}.`,
+  html:`
+    <p class="muted">Verde oscuro. Música suave. Sin presión.</p>
+    <p>Te hice algo chiquito, pero pensado.</p>
+    <p class="muted">Regla única: disfruta.</p>
+  `,
+  buttons:[{
+    text:"Empezar",
+    action:()=>{ startMusic(); go(1); }
+  }]
+},
+{
+  tag:"1/6",
+  title:"Pregunta 1",
+  html:`<p>Si esto se siente bonito es porque…</p>`,
+  buttons:[
+    {text:"Todo fluye", action:()=>go(2)},
+    {text:"Me siento en paz", action:()=>go(2)},
+    {text:"Las dos 😌", action:()=>go(2)}
+  ]
+},
+{
+  tag:"2/6",
+  title:"Pregunta 2",
+  html:`<p>Contigo el tiempo se siente…</p>`,
+  buttons:[
+    {text:"Ligero", action:()=>go(3)},
+    {text:"Corto", action:()=>go(3)},
+    {text:"Exacto", action:()=>go(3)}
+  ]
+},
+{
+  tag:"3/6",
+  title:"Completa",
+  html:`
+    <p>Completa la frase:</p>
+    <p><b>Se siente ____ contigo.</b></p>
+    <input id="a3" class="input" placeholder="Escribe aquí">
+    <div id="fb" class="hint"></div>
+  `,
+  buttons:[{
+    text:"Continuar",
+    action:()=>{
+      const v=normalize(el("a3").value);
+      if(v.length>3) go(4);
+      else el("fb").innerHTML="<span class='no'>Escribe algo bonito 😌</span>";
+    }
+  }]
+},
+{
+  tag:"4/6",
+  title:"Pregunta 4",
+  html:`<p>Esto no se siente forzado porque…</p>`,
+  buttons:[
+    {text:"No hay expectativas", action:()=>go(5)},
+    {text:"Todo se siente natural", action:()=>go(5)},
+    {text:"Me gusta quedarme", action:()=>go(5)}
+  ]
+},
+{
+  tag:"5/6",
+  title:"Última prueba",
+  html:`<p>Elige el power-up correcto:</p>`,
+  buttons:[
+    {text:"Más calma", action:()=>{code="AMOR";go(6)}},
+    {text:"Más nosotros", action:()=>{code="AMOR";go(6)}},
+    {text:"Más tú aquí", action:()=>{code="AMOR";go(6)}}
+  ]
+},
+{
+  tag:"6/6",
+  title:"Último nivel",
+  html:`
+    <p class="muted">Ya fuera de juego…</p>
+    <p><b>${NAME}, ¿quieres ser mi novia?</b></p>
+  `,
+  buttons:[
+    {text:"Sí 💚", action:()=>go(7)},
+    {text:"Obvio sí 😌", action:()=>go(7)}
+  ]
+},
+{
+  tag:"fin",
+  title:"Checkpoint desbloqueado",
+  html:`
+    <p class="ok">Logro: Novios 💚</p>
+    <p class="muted">Abrazo. Beso. Seguimos.</p>
+  `,
+  buttons:[{text:"Fin", action:()=>alert("💚")}]
+}
 ];
 
+function render(){
+  const s=steps[step];
+  el("tag").textContent=s.tag;
+  el("progress").textContent=`${step+1}/${steps.length}`;
+  el("title").textContent=s.title;
+  el("content").innerHTML=s.html;
+  const btns=el("btns");btns.innerHTML="";
+  (s.buttons||[]).forEach(b=>{
+    const x=document.createElement("button");
+    x.textContent=b.text;
+    x.onclick=b.action||(()=>go(b.next));
+    btns.appendChild(x);
+  });
+}
 render();
 </script>
 </body>
