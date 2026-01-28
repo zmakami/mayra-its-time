@@ -14,14 +14,43 @@
       --accent:#31c48d;
     }
     *{box-sizing:border-box}
+
     body{
       margin:0; min-height:100vh;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: radial-gradient(1200px 700px at 50% 35%, #0a2a1f 0%, var(--bg) 55%, #030a07 100%);
       color:var(--ink);
       display:flex; align-items:center; justify-content:center;
       padding:24px;
+      overflow:hidden;
+      background:#030a07;
     }
+
+    /* ====== VIDEO BACKGROUND (local) ====== */
+    #bgvideo{
+      position:fixed;
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      min-width:100%;
+      min-height:100%;
+      width:auto;
+      height:auto;
+      z-index:-2;
+      object-fit:cover;
+      filter: blur(2px) brightness(.50) contrast(1.12);
+      opacity:.20; /* sutil */
+    }
+
+    /* capa para mantener el mood verde oscuro y legibilidad */
+    .overlay{
+      position:fixed; inset:0;
+      z-index:-1;
+      background: radial-gradient(1200px 700px at 50% 35%,
+        rgba(10,42,31,.55) 0%,
+        rgba(6,17,13,.86) 55%,
+        rgba(3,10,7,.93) 100%);
+    }
+
+    /* ====== CARD ====== */
     .card{
       width:min(760px,100%);
       background: rgba(255,255,255,.03);
@@ -29,6 +58,7 @@
       border-radius:20px;
       padding:22px;
       box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      backdrop-filter: blur(8px);
     }
     .topbar{
       display:flex; justify-content:space-between; align-items:center;
@@ -42,7 +72,7 @@
       display:inline-block;margin-right:8px;
     }
     h1{margin:0 0 10px;font-size:22px; letter-spacing:.2px}
-    p{margin:10px 0;line-height:1.6}
+    p{margin:10px 0;line-height:1.62}
     .muted{color:var(--muted);font-size:14px}
     .btns{display:grid;gap:10px;margin-top:18px}
     button{
@@ -59,10 +89,11 @@
     button:active{transform: translateY(1px)}
     button.secondary{ background: transparent; color:var(--muted); }
     button.secondary:hover{background: rgba(255,255,255,.03); color:var(--ink)}
+
     .input{
       width:100%;padding:12px;margin-top:12px;
       border-radius:12px;border:1px solid var(--line);
-      background: rgba(0,0,0,.2);color:var(--ink);
+      background: rgba(0,0,0,.20);color:var(--ink);
       outline:none;
       font-size:16px;
     }
@@ -71,13 +102,18 @@
     .no{color:#ffb3b3;font-weight:800}
     .divider{height:1px; background: var(--line); margin:14px 0}
     .big{font-size:18px}
-    .em{color:var(--accent); font-weight:800}
   </style>
 </head>
 
 <body>
 
-<!-- 🎵 AUDIO -->
+<!-- 🌌 Background video -->
+<video id="bgvideo" autoplay muted loop playsinline preload="auto">
+  <source src="video.mp4" type="video/mp4">
+</video>
+<div class="overlay"></div>
+
+<!-- 🎵 Music (your file) -->
 <audio id="bgm" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
@@ -115,8 +151,6 @@ function startMusic(){
 
 /* ===== HELPERS ===== */
 let step = 0;
-const state = { a1:null, a2:null, a3:null, a4:null, a5:null, a6:null };
-
 function el(id){ return document.getElementById(id); }
 function go(n){ step = n; render(); }
 function normalize(s){
@@ -127,8 +161,12 @@ function normalize(s){
     .trim();
 }
 
-/* ===== GAME SCREENS =====
-   6 preguntas normales + 1 fecha + 3 "listas?" + propuesta + final
+/* ===== FLOW =====
+   6 preguntas normales
+   + pregunta fecha (18 de Enero)
+   + desbloqueo
+   + lista x3
+   + propuesta
 */
 const steps = [
 /* 0 INTRO */
@@ -136,12 +174,12 @@ const steps = [
   tag:"inicio",
   title:`Hola, ${NAME}. 💚`,
   html:`
-    <p class="muted">Esto es un jueguito corto… pero lo hice con intención.</p>
-    <p>Si estás leyendo esto, es porque elegiste quedarte un ratito conmigo. Y la neta… eso ya dice mucho.</p>
-    <p>Hoy no vengo a impresionarte. Vengo a decirte algo bonito, a mi manera: <b>con calma</b>, <b>con detalle</b> y <b>sin presión</b>.</p>
+    <p class="muted">Ok… esto es algo chiquito, pero lo hice con intención.</p>
+    <p>Me gusta lo que estamos viviendo porque se siente fácil. No por “simple”, sino por real.</p>
+    <p>Así que te armé un juego rápido: bonito, inteligente, y muy nosotros. Sin presión.</p>
     <div class="divider"></div>
     <p class="muted">Reglas:</p>
-    <p class="muted">1) No te saltes nada.<br>2) Si sonríes, vas bien.<br>3) Si se te acelera poquito el corazón… también es parte del juego 😌</p>
+    <p class="muted">1) No te saltes nada.<br>2) Si sonríes, vas bien.<br>3) Si te pones nerviosa… yo también 😌</p>
   `,
   buttons:[{
     text:"Empezar",
@@ -154,14 +192,14 @@ const steps = [
   tag:"pregunta 1/6",
   title:"Nivel 1 — Señal clarísima 😏",
   html:`
-    <p>Ok. Empecemos suave.</p>
-    <p class="big"><b>¿Cuál de estas cosas es la señal más obvia de que me gustas?</b></p>
-    <p class="muted">Tip: ninguna es mentira… pero una es demasiado real.</p>
+    <p>Empezamos suave, pero real.</p>
+    <p class="big"><b>¿Cuál es la señal más obvia de que me gustas?</b></p>
+    <p class="muted">No te asustes: todas son verdad… solo elige la que más te dé risa.</p>
   `,
   buttons:[
-    { text:"Me importa tu día, de verdad", action:()=>{ state.a1="dia"; go(2); } },
-    { text:"Me dan ganas de verte aunque esté cansado", action:()=>{ state.a1="verte"; go(2); } },
-    { text:"Me siento en paz contigo (y eso no es común)", action:()=>{ state.a1="paz"; go(2); } }
+    { text:"Me importa tu día de verdad", action:()=>go(2) },
+    { text:"Me dan ganas de verte aunque esté cansado", action:()=>go(2) },
+    { text:"Contigo me da paz (y eso no es común)", action:()=>go(2) }
   ]
 },
 
@@ -171,36 +209,32 @@ const steps = [
   title:"Nivel 2 — Lectura fina 🧠",
   html:`
     <p class="muted">Esta es de esas que dicen mucho sin decirlo.</p>
-    <p class="big"><b>Cuando una persona te importa de verdad, ¿qué cambia?</b></p>
+    <p class="big"><b>Cuando alguien te importa… ¿qué cambia?</b></p>
     <p>Elige la opción más “nosotros”:</p>
   `,
   buttons:[
-    { text:"Dejas de fingir y te sientes tú", action:()=>{ state.a2="tú"; go(3); } },
-    { text:"Todo se vuelve más simple, pero más bonito", action:()=>{ state.a2="simple"; go(3); } },
-    { text:"Ya no buscas emoción… buscas calma", action:()=>{ state.a2="calma"; go(3); } }
+    { text:"Dejas de fingir y te sientes tú", action:()=>go(3) },
+    { text:"Todo se vuelve más simple, pero más bonito", action:()=>go(3) },
+    { text:"Ya no buscas emoción… buscas calma", action:()=>go(3) }
   ]
 },
 
-/* 3 Q3 (texto bonito) */
+/* 3 Q3 (texto) */
 {
   tag:"pregunta 3/6",
-  title:"Nivel 3 — Completa la frase (con estilo)",
+  title:"Nivel 3 — Completa la frase",
   html:`
-    <p>Quiero una respuesta tuya, no una de opción múltiple 😌</p>
+    <p>Quiero una respuesta tuya, no de opción múltiple 😌</p>
     <p class="big"><b>Completa:</b> “Se siente ______ contigo.”</p>
-    <p class="muted">Ejemplos: “fácil”, “bonito”, “real”, “tranquilo”… lo que salga de ti.</p>
+    <p class="muted">Una o dos palabras. Lo primero que te salga.</p>
     <input id="a3" class="input" placeholder="Escríbelo aquí…" autocomplete="off">
-    <div id="fb3" class="hint">Tip: con una o dos palabras basta.</div>
+    <div id="fb3" class="hint">Tip: puede ser “fácil”, “bonito”, “real”, “en paz”…</div>
   `,
   buttons:[
     { text:"Continuar", action:()=>{
         const v = normalize(el("a3").value);
-        if(v.length >= 2){
-          state.a3 = v;
-          go(4);
-        } else {
-          el("fb3").innerHTML = `<span class="no">Pon algo chiquito pero real 😌</span>`;
-        }
+        if(v.length >= 2) go(4);
+        else el("fb3").innerHTML = `<span class="no">Pon algo chiquito pero real 😌</span>`;
       }
     },
     { text:"Dame idea", secondary:true, action:()=>{
@@ -216,59 +250,59 @@ const steps = [
   tag:"pregunta 4/6",
   title:"Nivel 4 — La respuesta adulta 💚",
   html:`
-    <p class="muted">Ok, esta es romántica sin ser cursi.</p>
-    <p class="big"><b>¿Qué es lo que más te convence de algo bonito?</b></p>
+    <p class="muted">Romántica sin ser cursi.</p>
+    <p class="big"><b>¿Qué te convence de algo bonito?</b></p>
     <p>Elige:</p>
   `,
   buttons:[
-    { text:"Que se sienta natural, no forzado", action:()=>{ state.a4="natural"; go(5); } },
-    { text:"Que haya intención, no prisa", action:()=>{ state.a4="intencion"; go(5); } },
-    { text:"Que haya paz… y ganas", action:()=>{ state.a4="pazganas"; go(5); } }
+    { text:"Que se sienta natural, no forzado", action:()=>go(5) },
+    { text:"Que haya intención, no prisa", action:()=>go(5) },
+    { text:"Que haya paz… y ganas", action:()=>go(5) }
   ]
 },
 
-/* 5 Q5 (smart/chistosa) */
+/* 5 Q5 */
 {
   tag:"pregunta 5/6",
-  title:"Nivel 5 — Pick one (pero piensa 😏)",
+  title:"Nivel 5 — Trampa bonita 😏",
   html:`
-    <p class="muted">Esta es una trampa bonita.</p>
+    <p class="muted">Si te ríes aquí, ya ganamos.</p>
     <p class="big"><b>Si yo pudiera pedir un “power-up” para lo nuestro, sería:</b></p>
-    <p>Elige el que te dé más sonrisa:</p>
+    <p class="muted">Elige el que sienta más tú.</p>
   `,
   buttons:[
-    { text:"Más momentos simples que se sientan enormes", action:()=>{ state.a5="momentos"; go(6); } },
-    { text:"Más besos… y menos miedo", action:()=>{ state.a5="besos"; go(6); } },
-    { text:"Más tú aquí… conmigo", action:()=>{ state.a5="tuconmigo"; go(6); } }
+    { text:"Más momentos simples que se sientan enormes", action:()=>go(6) },
+    { text:"Más besos… y menos miedo", action:()=>go(6) },
+    { text:"Más tú aquí… conmigo", action:()=>go(6) }
   ]
 },
 
-/* 6 Q6 (romántica lista) */
+/* 6 Q6 */
 {
   tag:"pregunta 6/6",
   title:"Nivel 6 — La más real",
   html:`
     <p>Última de las “normales”.</p>
     <p class="big"><b>¿Cuál es la diferencia entre gustar y elegir?</b></p>
-    <p class="muted">Respuesta correcta: la que se siente más verdadera.</p>
+    <p class="muted">No hay respuesta perfecta… pero sí una que se siente verdadera.</p>
   `,
   buttons:[
-    { text:"Gustar es emoción; elegir es intención", action:()=>{ state.a6="intencion"; go(7); } },
-    { text:"Gustar es hoy; elegir es seguir mañana", action:()=>{ state.a6="mañana"; go(7); } },
-    { text:"Gustar es fácil; elegir es cuidarlo", action:()=>{ state.a6="cuidar"; go(7); } }
+    { text:"Gustar es emoción; elegir es intención", action:()=>go(7) },
+    { text:"Gustar es hoy; elegir es seguir mañana", action:()=>go(7) },
+    { text:"Gustar es fácil; elegir es cuidarlo", action:()=>go(7) }
   ]
 },
 
-/* 7 EXTRA: fecha primera cita */
+/* 7 DATE QUESTION */
 {
-  tag:"bonus",
+  tag:"nivel extra",
   title:"Nivel extra — Memoria del corazón 🗓️",
   html:`
-    <p class="muted">Ok… esta sí es importante.</p>
+    <p class="muted">Ok… esta sí importa.</p>
     <p class="big"><b>¿Sabes cuándo fue nuestra primer cita?</b></p>
-    <p class="muted">Escríbelo así: “18 de Enero” (sin pánico 😌)</p>
-    <input id="date" class="input" placeholder="Ej: 18 de Enero" autocomplete="off">
-    <div id="fb7" class="hint">Tip: no pasa nada si pones “18 enero”.</div>
+    <p class="muted">Escríbelo así: “18 de Enero”.</p>
+    <input id="date" class="input" placeholder="18 de Enero" autocomplete="off">
+    <div id="fb7" class="hint">Tip: también sirve “18 enero”.</div>
   `,
   buttons:[
     { text:"Confirmar", action:()=>{
@@ -283,16 +317,16 @@ const steps = [
       }
     },
     { text:"Dame pista", secondary:true, action:()=>{
-        el("fb7").innerHTML = `Pista: el número es <b>18</b> y el mes es <b>Enero</b> 😉`;
+        el("fb7").innerHTML = `Pista: número <b>18</b> + mes <b>Enero</b> 😉`;
       }
     }
   ]
 },
 
-/* 8 unlocked */
+/* 8 UNLOCKED */
 {
-  tag:"desbloqueado",
-  title:"🔓 Desbloqueaste una pregunta secreta",
+  tag:"🔓",
+  title:"Desbloqueaste una pregunta secreta",
   html:`
     <p class="big"><b>Ok… entonces sí te acuerdas.</b></p>
     <p>Y si te acuerdas de eso, es porque lo que estamos viviendo importa.</p>
@@ -301,7 +335,7 @@ const steps = [
   buttons:[{ text:"Siguiente", action:()=>go(9) }]
 },
 
-/* 9 ready 1 */
+/* 9 READY 1 */
 {
   tag:"…",
   title:"Antes de continuar…",
@@ -311,11 +345,11 @@ const steps = [
   `,
   buttons:[
     { text:"Sí", action:()=>go(10) },
-    { text:"Espérame tantito", secondary:true, action:()=>{ /* se queda */ } }
+    { text:"Espérame tantito", secondary:true, action:()=>{} }
   ]
 },
 
-/* 10 ready 2 */
+/* 10 READY 2 */
 {
   tag:"…",
   title:"Ok… ¿segura?",
@@ -329,21 +363,19 @@ const steps = [
   ]
 },
 
-/* 11 ready 3 */
+/* 11 READY 3 */
 {
   tag:"…",
   title:"Última vez",
   html:`
-    <p class="big"><b>Ok… última confirmación:</b></p>
+    <p class="big"><b>Última confirmación:</b></p>
     <p class="big"><b>¿Estás lista?</b></p>
     <p class="muted">Yo sí.</p>
   `,
-  buttons:[
-    { text:"Sí 😌", action:()=>go(12) }
-  ]
+  buttons:[ { text:"Sí 😌", action:()=>go(12) } ]
 },
 
-/* 12 proposal */
+/* 12 PROPOSAL */
 {
   tag:"final",
   title:"Último nivel",
@@ -360,7 +392,7 @@ const steps = [
   ]
 },
 
-/* 13 celebration */
+/* 13 CELEBRATION */
 {
   tag:"✅",
   title:"Checkpoint desbloqueado",
@@ -371,9 +403,7 @@ const steps = [
     <div class="divider"></div>
     <p class="muted">Fin del juego. Inicio de lo bueno.</p>
   `,
-  buttons:[
-    { text:"Fin", action:()=>alert("💚") }
-  ]
+  buttons:[ { text:"Fin", action:()=>alert("💚") } ]
 }
 ];
 
