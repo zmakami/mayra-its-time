@@ -2,183 +2,376 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Último Nivel 💙</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Último Nivel</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background: #0b0b0f; color: #f2f2f2; }
-    .wrap { max-width: 720px; margin: 0 auto; padding: 24px; }
-    .card { background: #151520; border: 1px solid #2a2a3a; border-radius: 18px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
-    h1 { font-size: 22px; margin: 0 0 12px; }
-    p { line-height: 1.5; font-size: 16px; margin: 10px 0; }
-    .btns { display: grid; gap: 10px; margin-top: 16px; }
-    button { background: #f2f2f2; color: #111; border: none; padding: 14px 14px; border-radius: 14px; font-size: 16px; font-weight: 600; }
-    button.secondary { background: transparent; color: #f2f2f2; border: 1px solid #3a3a55; }
-    input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #3a3a55; background: #0f0f16; color: #f2f2f2; font-size: 16px; }
-    .hint { opacity: .75; font-size: 13px; margin-top: 8px; }
-    .progress { opacity: .7; font-size: 13px; margin-bottom: 12px; }
-    .good { color: #7CFCB2; font-weight: 700; }
-    .bad { color: #ff9a9a; font-weight: 700; }
+    :root{
+      --bg:#06110d;         /* verde oscuro profundo */
+      --panel:#081a14;      /* panel */
+      --ink:#e7fff4;        /* texto */
+      --muted:#b7d9c9;      /* texto suave */
+      --line:#0e2f25;       /* borde */
+      --accent:#31c48d;     /* verde bonito */
+      --accent2:#0ea5a5;    /* toque teal */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 700px at 50% 35%, #0a2a1f 0%, var(--bg) 55%, #030a07 100%);
+      color:var(--ink);
+      display:flex; align-items:center; justify-content:center;
+      padding:24px;
+    }
+    .shell{
+      width:min(720px, 100%);
+      display:flex; flex-direction:column; gap:14px;
+      align-items:center;
+    }
+    .card{
+      width:100%;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:22px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      backdrop-filter: blur(8px);
+    }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; margin-bottom:10px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--accent); box-shadow:0 0 18px rgba(49,196,141,.55);}
+    h1{margin:0 0 10px; font-size:22px; letter-spacing:.2px;}
+    p{margin:10px 0; line-height:1.55; font-size:16px; color:var(--ink);}
+    .muted{color:var(--muted); font-size:14px}
+    .btns{display:grid; gap:10px; margin-top:16px;}
+    button{
+      appearance:none;
+      border:1px solid var(--line);
+      background: rgba(49,196,141,.14);
+      color:var(--ink);
+      padding:13px 14px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:15px;
+      cursor:pointer;
+      transition: transform .06s ease, background .2s ease, border-color .2s ease;
+    }
+    button:hover{background: rgba(49,196,141,.20); border-color:#1f5a45}
+    button:active{transform: translateY(1px)}
+    button.secondary{
+      background: transparent;
+      color:var(--muted);
+    }
+    button.secondary:hover{border-color:#1f5a45; background: rgba(255,255,255,.03); color:var(--ink)}
+    .input{
+      width:100%;
+      margin-top:12px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color:var(--ink);
+      outline:none;
+      font-size:16px;
+    }
+    .input:focus{border-color:#1f5a45; box-shadow:0 0 0 4px rgba(49,196,141,.15)}
+    .pillrow{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .pill{
+      border:1px solid var(--line);
+      background: rgba(14,47,37,.45);
+      color:var(--muted);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:13px;
+      user-select:none;
+    }
+    .hint{margin-top:10px; font-size:13px; color:var(--muted)}
+    .ok{color:#7CFCB2; font-weight:800}
+    .no{color:#ffb3b3; font-weight:800}
+    .divider{height:1px; background: var(--line); margin:14px 0}
+    a{color:var(--accent); text-decoration:none}
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <div class="shell">
     <div class="card">
-      <div class="progress" id="progress"></div>
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="dot"></div>
+          <div id="progress">Pantalla 1</div>
+        </div>
+        <div id="tag">Último nivel</div>
+      </div>
+
       <h1 id="title"></h1>
       <div id="content"></div>
+
       <div class="btns" id="btns"></div>
     </div>
   </div>
 
-  <script>
-    // 👉 EDITA AQUÍ: el nombre y algunos textos
-    const NAME = "Mayra";
+<script>
+/* =========================
+   CONFIG RÁPIDA (EDITA AQUÍ)
+   ========================= */
+const NAME = "Mayra";
+const YOU  = "Dani";
 
-    const state = { step: 0, choice: null, solved: false };
+/* =========================
+   MOTOR DEL JUEGO
+   ========================= */
+const state = {
+  step: 0,
+  key: null,       // clave final derivada del juego
+  score: 0,
+  attempt: 0
+};
 
-    const steps = [
-      {
-        title: `Hola, ${NAME} 💙`,
-        html: `
-          <p>Si llegaste hasta aquí… es porque confiaste en mí un ratito.</p>
-          <p>Este es un jueguito corto. Regla #1: <b>no te saltes nada</b> 😌</p>
-        `,
-        buttons: [
-          { text: "Empezar", next: 1 }
-        ]
-      },
-      {
-        title: "Nivel 1/3 — Calentamiento",
-        html: `
-          <p>Primera decisión (fácil):</p>
-          <p><b>¿Qué te antoja más ahorita?</b></p>
-        `,
-        buttons: [
-          { text: "Cafecito ☕", action: () => { state.choice = "café"; go(2); } },
-          { text: "Postrecito 🍰", action: () => { state.choice = "postre"; go(2); } }
-        ]
-      },
-      {
-        title: "Nivel 2/3 — La verdad",
-        html: `
-          <p>Ok… ${state.choice ? `entonces ${state.choice}.` : ""}</p>
-          <p>Ahora sí:</p>
-          <p><b>Cuando estoy contigo me siento…</b></p>
-        `,
-        buttons: [
-          { text: "En paz", next: 3 },
-          { text: "Tranquilo", next: 3 },
-          { text: "Emocionado", next: 3 }
-        ]
-      },
-      {
-        title: "Nivel 3/3 — Mini puzzle",
-        html: `
-          <p>Última prueba 😏</p>
-          <p>Escribe la frase en el orden correcto:</p>
-          <p><b>contigo / con calma / sin presión / con intención</b></p>
-          <input id="answer" placeholder="Escríbelo aquí…" autocomplete="off" />
-          <div class="hint">Tip: no tiene que ser perfecto, solo que se entienda.</div>
-          <div id="feedback" class="hint"></div>
-        `,
-        buttons: [
-          { text: "Comprobar", action: check },
-          { text: "Me rindo (pista)", action: () => {
-              document.getElementById("feedback").innerHTML =
-                `Pista: empieza con <b>contigo</b> 😉`;
-            }, secondary: true
-          }
-        ]
-      },
-      {
-        title: "Fuera de juego",
-        html: `
-          <p>Ok… ya en serio.</p>
-          <p>No era el plan sentir esto. Pero pasó.</p>
-          <p>Me gusta cómo se siente estar contigo: fácil, natural, sin presión.</p>
-          <p>Y me nace hacer las cosas bien… contigo.</p>
-        `,
-        buttons: [
-          { text: "Siguiente", next: 5 }
-        ]
-      },
-      {
-        title: "Último nivel",
-        html: `
-          <p>Respira.</p>
-          <p>Porque aquí va lo que de verdad quería decirte:</p>
-          <p style="font-size:18px;"><b>¿Quieres ser mi novia?</b></p>
-        `,
-        buttons: [
-          { text: "Sí 💙", next: 6 },
-          { text: "Obvio sí 😌", next: 6 }
-        ]
-      },
-      {
-        title: "Checkpoint desbloqueado ✅",
-        html: `
-          <p class="good">Nuevo logro: <b>Novios</b> 💙</p>
-          <p>Recompensa:</p>
-          <p>1) Abrazo<br/>2) Beso<br/>3) Vamos por ${state.choice || "algo rico"} 😏</p>
-          <p class="hint">Gracias por existir en mi vida.</p>
-        `,
-        buttons: [
-          { text: "Fin", action: () => alert("💙") }
-        ]
-      }
-    ];
+function el(id){ return document.getElementById(id); }
 
-    function render() {
-      const s = steps[state.step];
-      document.getElementById("progress").textContent = `Pantalla ${state.step + 1} / ${steps.length}`;
-      document.getElementById("title").textContent = s.title;
-      document.getElementById("content").innerHTML = s.html;
+function normalize(s){
+  return (s||"")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")  // quita acentos
+    .replace(/[^\w\s]/g,"")                          // quita signos
+    .replace(/\s+/g," ")
+    .trim();
+}
 
-      const btns = document.getElementById("btns");
-      btns.innerHTML = "";
+// Pequeño hash “humano”: genera una clave de 4 letras a partir de una frase
+function makeKey(phrase){
+  const n = normalize(phrase);
+  let sum = 0;
+  for (let i=0;i<n.length;i++){
+    sum = (sum + n.charCodeAt(i) * (i+1)) % 10000;
+  }
+  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // sin I/O para que no confunda
+  const a = letters[(sum      ) % letters.length];
+  const b = letters[(sum >> 2 ) % letters.length];
+  const c = letters[(sum >> 4 ) % letters.length];
+  const d = letters[(sum >> 6 ) % letters.length];
+  return `${a}${b}${c}${d}`;
+}
 
-      (s.buttons || []).forEach(b => {
-        const el = document.createElement("button");
-        el.textContent = b.text;
-        if (b.secondary) el.classList.add("secondary");
-        el.onclick = b.action ? b.action : () => go(b.next);
-        btns.appendChild(el);
-      });
-    }
+const steps = [
+  {
+    tag: "Inicio",
+    title: `Hola, ${NAME}.`,
+    html: `
+      <p class="muted">Minimal. Sin ruido. Como se siente esto.</p>
+      <p>Si llegaste aquí es porque confiaste en mí un ratito.</p>
+      <p>Este es un juego corto… pero <b>sí está más “smart”</b>. 😌</p>
+      <div class="divider"></div>
+      <p class="muted">Reglas:</p>
+      <p class="muted">1) No te saltes nada.<br>2) Si te atoras, hay pista.<br>3) El final vale la pena.</p>
+    `,
+    buttons: [{ text:"Empezar", next:1 }]
+  },
 
-    function go(n) {
-      state.step = n;
-      render();
-    }
+  // NIVEL 1: lógica / patrón
+  {
+    tag: "Nivel 1",
+    title: "Patrón",
+    html: `
+      <p>Elige la opción que completa la secuencia:</p>
+      <p><b>2 — 3 — 5 — 8 — 13 — ?</b></p>
+      <p class="muted">No te preocupes, no es examen. Solo quiero ver si eres team “cerebrito” 😏</p>
+      <div id="feedback" class="hint"></div>
+    `,
+    buttons: [
+      { text:"21", action: () => correct(2, "Bien 😌") },
+      { text:"20", action: () => wrong("Casi. Piensa en sumar los dos anteriores.") },
+      { text:"18", action: () => wrong("Nope. Pista: 2+3=5, 3+5=8…") },
+      { text:"Pista", action: () => hint("Es Fibonacci: cada número es la suma de los dos anteriores.") , secondary:true}
+    ]
+  },
 
-    function normalize(str) {
-      return (str || "")
-        .toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^\w\s]/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
+  // NIVEL 2: anagrama/ordenar palabras
+  {
+    tag: "Nivel 2",
+    title: "Orden",
+    html: `
+      <p>Ordena mentalmente estas 4 palabras para formar una frase que tenga sentido:</p>
+      <div class="pillrow">
+        <div class="pill">contigo</div>
+        <div class="pill">paz</div>
+        <div class="pill">se</div>
+        <div class="pill">siente</div>
+      </div>
+      <input class="input" id="ans2" placeholder="Escríbelo aquí…" autocomplete="off" />
+      <div id="feedback" class="hint"></div>
+    `,
+    buttons: [
+      { text:"Comprobar", action: check2 },
+      { text:"Pista", action: () => hint("Empieza con: “Se…”") , secondary:true}
+    ]
+  },
 
-    function check() {
-      const ans = document.getElementById("answer")?.value || "";
-      const n = normalize(ans);
-      const ok =
-        n.includes("contigo") &&
-        n.includes("con calma") &&
-        (n.includes("sin presion") || n.includes("sin presion")) &&
-        n.includes("con intencion");
+  // NIVEL 3: clave derivada (más “smart”)
+  {
+    tag: "Nivel 3",
+    title: "Clave",
+    html: `
+      <p>Ok. Última prueba antes del final.</p>
+      <p class="muted">Te voy a pedir una frase corta. Con esa frase el juego genera una clave.</p>
+      <p><b>Escribe una frase de 4 a 8 palabras que describa lo que se siente estar juntos.</b></p>
+      <input class="input" id="ans3" placeholder="Ej: 'Se siente fácil, bonito y real'…" autocomplete="off" />
+      <div id="keybox" class="hint"></div>
+      <div id="feedback" class="hint"></div>
+    `,
+    buttons: [
+      { text:"Generar clave", action: genKey },
+      { text:"Pista", action: () => hint("Puede ser algo como: “Se siente natural y en paz”.") , secondary:true}
+    ]
+  },
 
-      const fb = document.getElementById("feedback");
-      if (ok) {
-        fb.innerHTML = `<span class="good">Correcto 😌</span>`;
-        setTimeout(() => go(4), 500);
-      } else {
-        fb.innerHTML = `<span class="bad">Casi.</span> Intenta algo como: “contigo, con calma, sin presión, con intención”`;
-      }
-    }
+  // VALIDACIÓN CLAVE (más difícil)
+  {
+    tag: "Checkpoint",
+    title: "Verificación",
+    html: `
+      <p>Ahora escribe la <b>clave</b> que te salió (4 letras). 😌</p>
+      <input class="input" id="ans4" placeholder="ABCD" autocomplete="off" />
+      <div id="feedback" class="hint"></div>
+      <p class="muted">Sí, lo sé… soy extra. Pero es parte del encanto.</p>
+    `,
+    buttons: [
+      { text:"Entrar", action: check4 },
+      { text:"Volver a ver clave", action: () => go(3), secondary:true }
+    ]
+  },
 
-    render();
-  </script>
+  // FUERA DE JUEGO (romántico suave)
+  {
+    tag: "Fuera de juego",
+    title: "Ok… ya en serio.",
+    html: `
+      <p>Gracias por jugarlo de verdad.</p>
+      <p>La neta… me gusta cómo se siente estar contigo. Se siente <b>fácil</b>, se siente <b>bonito</b>, se siente <b>real</b>.</p>
+      <p>No quiero correr ni hacer un show. Solo quería decirte esto de una forma que se sintiera <i>nuestra</i>.</p>
+    `,
+    buttons: [{ text:"Siguiente", next:6 }]
+  },
+
+  // FINAL
+  {
+    tag: "Final",
+    title: "Último nivel",
+    html: `
+      <p class="muted">Respira.</p>
+      <p style="font-size:18px"><b>${NAME}… ¿quieres ser mi novia?</b></p>
+    `,
+    buttons: [
+      { text:"Sí 💚", next:7 },
+      { text:"Obvio sí 😌", next:7 }
+    ]
+  },
+
+  // CELEBRACIÓN
+  {
+    tag: "✅",
+    title: "Checkpoint desbloqueado",
+    html: `
+      <p class="ok">Logro desbloqueado: <b>Novios</b> 💚</p>
+      <p class="muted">Recompensa:</p>
+      <p>1) Abrazo<br>2) Beso<br>3) Seguimos escribiendo esto… con calma y con intención.</p>
+      <div class="divider"></div>
+      <p class="muted">Fin del juego. Inicio de lo bueno.</p>
+    `,
+    buttons: [{ text:"Fin", action: () => alert("💚") }]
+  }
+];
+
+function render(){
+  const s = steps[state.step];
+  el("progress").textContent = `Pantalla ${state.step+1} / ${steps.length}`;
+  el("tag").textContent = s.tag || "";
+  el("title").textContent = s.title || "";
+  el("content").innerHTML = s.html || "";
+
+  const btns = el("btns");
+  btns.innerHTML = "";
+  (s.buttons||[]).forEach(b=>{
+    const btn = document.createElement("button");
+    btn.textContent = b.text;
+    if (b.secondary) btn.classList.add("secondary");
+    btn.onclick = b.action ? b.action : () => go(b.next);
+    btns.appendChild(btn);
+  });
+}
+
+function go(n){
+  state.step = n;
+  render();
+}
+
+function hint(msg){
+  const fb = el("feedback");
+  if (fb) fb.innerHTML = `💡 ${msg}`;
+}
+
+function wrong(msg){
+  state.attempt++;
+  const fb = el("feedback");
+  if (fb) fb.innerHTML = `<span class="no">Nope.</span> ${msg}`;
+}
+
+function correct(nextStep, msg){
+  state.score++;
+  const fb = el("feedback");
+  if (fb) fb.innerHTML = `<span class="ok">Bien.</span> ${msg}`;
+  setTimeout(()=>go(nextStep), 450);
+}
+
+/* ========== NIVEL 2 ========== */
+function check2(){
+  const ans = normalize(el("ans2").value);
+  // aceptamos variaciones razonables
+  const ok = (ans === "se siente paz contigo") || (ans === "se siente paz contigo") ||
+             (ans === "se siente contigo paz") || (ans.includes("se siente") && ans.includes("contigo") && ans.includes("paz"));
+  if (ok) correct(3, "Eso. 🫶");
+  else wrong("Intenta que suene como una frase real.");
+}
+
+/* ========== NIVEL 3 ========== */
+function genKey(){
+  const phrase = el("ans3").value || "";
+  const n = normalize(phrase);
+  if (n.split(" ").filter(Boolean).length < 4){
+    wrong("Pon una frase de mínimo 4 palabras.");
+    return;
+  }
+  state.key = makeKey(phrase);
+  const box = el("keybox");
+  box.innerHTML = `Tu clave: <b style="letter-spacing:.25em;color:var(--accent)">${state.key}</b>`;
+  el("feedback").innerHTML = `<span class="ok">Listo.</span> Ahora guarda esa clave.`;
+  setTimeout(()=>go(4), 900);
+}
+
+/* ========== CHECKPOINT ========== */
+function check4(){
+  const ans = normalize(el("ans4").value).toUpperCase();
+  const fb = el("feedback");
+  if (!state.key){
+    fb.innerHTML = `<span class="no">Ups.</span> Primero genera la clave.`;
+    return;
+  }
+  // más estricto: debe ser exacta
+  if (ans === state.key){
+    fb.innerHTML = `<span class="ok">Acceso concedido.</span>`;
+    setTimeout(()=>go(5), 500);
+  } else {
+    wrong("Clave incorrecta. Vuelve a la anterior si quieres verla otra vez.");
+  }
+}
+
+render();
+</script>
 </body>
 </html>
