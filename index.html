@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Último Nivel 💙</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background: #0b0b0f; color: #f2f2f2; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 24px; }
+    .card { background: #151520; border: 1px solid #2a2a3a; border-radius: 18px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    h1 { font-size: 22px; margin: 0 0 12px; }
+    p { line-height: 1.5; font-size: 16px; margin: 10px 0; }
+    .btns { display: grid; gap: 10px; margin-top: 16px; }
+    button { background: #f2f2f2; color: #111; border: none; padding: 14px 14px; border-radius: 14px; font-size: 16px; font-weight: 600; }
+    button.secondary { background: transparent; color: #f2f2f2; border: 1px solid #3a3a55; }
+    input { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #3a3a55; background: #0f0f16; color: #f2f2f2; font-size: 16px; }
+    .hint { opacity: .75; font-size: 13px; margin-top: 8px; }
+    .progress { opacity: .7; font-size: 13px; margin-bottom: 12px; }
+    .good { color: #7CFCB2; font-weight: 700; }
+    .bad { color: #ff9a9a; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="progress" id="progress"></div>
+      <h1 id="title"></h1>
+      <div id="content"></div>
+      <div class="btns" id="btns"></div>
+    </div>
+  </div>
+
+  <script>
+    // 👉 EDITA AQUÍ: el nombre y algunos textos
+    const NAME = "Mayra";
+
+    const state = { step: 0, choice: null, solved: false };
+
+    const steps = [
+      {
+        title: `Hola, ${NAME} 💙`,
+        html: `
+          <p>Si llegaste hasta aquí… es porque confiaste en mí un ratito.</p>
+          <p>Este es un jueguito corto. Regla #1: <b>no te saltes nada</b> 😌</p>
+        `,
+        buttons: [
+          { text: "Empezar", next: 1 }
+        ]
+      },
+      {
+        title: "Nivel 1/3 — Calentamiento",
+        html: `
+          <p>Primera decisión (fácil):</p>
+          <p><b>¿Qué te antoja más ahorita?</b></p>
+        `,
+        buttons: [
+          { text: "Cafecito ☕", action: () => { state.choice = "café"; go(2); } },
+          { text: "Postrecito 🍰", action: () => { state.choice = "postre"; go(2); } }
+        ]
+      },
+      {
+        title: "Nivel 2/3 — La verdad",
+        html: `
+          <p>Ok… ${state.choice ? `entonces ${state.choice}.` : ""}</p>
+          <p>Ahora sí:</p>
+          <p><b>Cuando estoy contigo me siento…</b></p>
+        `,
+        buttons: [
+          { text: "En paz", next: 3 },
+          { text: "Tranquilo", next: 3 },
+          { text: "Emocionado", next: 3 }
+        ]
+      },
+      {
+        title: "Nivel 3/3 — Mini puzzle",
+        html: `
+          <p>Última prueba 😏</p>
+          <p>Escribe la frase en el orden correcto:</p>
+          <p><b>contigo / con calma / sin presión / con intención</b></p>
+          <input id="answer" placeholder="Escríbelo aquí…" autocomplete="off" />
+          <div class="hint">Tip: no tiene que ser perfecto, solo que se entienda.</div>
+          <div id="feedback" class="hint"></div>
+        `,
+        buttons: [
+          { text: "Comprobar", action: check },
+          { text: "Me rindo (pista)", action: () => {
+              document.getElementById("feedback").innerHTML =
+                `Pista: empieza con <b>contigo</b> 😉`;
+            }, secondary: true
+          }
+        ]
+      },
+      {
+        title: "Fuera de juego",
+        html: `
+          <p>Ok… ya en serio.</p>
+          <p>No era el plan sentir esto. Pero pasó.</p>
+          <p>Me gusta cómo se siente estar contigo: fácil, natural, sin presión.</p>
+          <p>Y me nace hacer las cosas bien… contigo.</p>
+        `,
+        buttons: [
+          { text: "Siguiente", next: 5 }
+        ]
+      },
+      {
+        title: "Último nivel",
+        html: `
+          <p>Respira.</p>
+          <p>Porque aquí va lo que de verdad quería decirte:</p>
+          <p style="font-size:18px;"><b>¿Quieres ser mi novia?</b></p>
+        `,
+        buttons: [
+          { text: "Sí 💙", next: 6 },
+          { text: "Obvio sí 😌", next: 6 }
+        ]
+      },
+      {
+        title: "Checkpoint desbloqueado ✅",
+        html: `
+          <p class="good">Nuevo logro: <b>Novios</b> 💙</p>
+          <p>Recompensa:</p>
+          <p>1) Abrazo<br/>2) Beso<br/>3) Vamos por ${state.choice || "algo rico"} 😏</p>
+          <p class="hint">Gracias por existir en mi vida.</p>
+        `,
+        buttons: [
+          { text: "Fin", action: () => alert("💙") }
+        ]
+      }
+    ];
+
+    function render() {
+      const s = steps[state.step];
+      document.getElementById("progress").textContent = `Pantalla ${state.step + 1} / ${steps.length}`;
+      document.getElementById("title").textContent = s.title;
+      document.getElementById("content").innerHTML = s.html;
+
+      const btns = document.getElementById("btns");
+      btns.innerHTML = "";
+
+      (s.buttons || []).forEach(b => {
+        const el = document.createElement("button");
+        el.textContent = b.text;
+        if (b.secondary) el.classList.add("secondary");
+        el.onclick = b.action ? b.action : () => go(b.next);
+        btns.appendChild(el);
+      });
+    }
+
+    function go(n) {
+      state.step = n;
+      render();
+    }
+
+    function normalize(str) {
+      return (str || "")
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\w\s]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function check() {
+      const ans = document.getElementById("answer")?.value || "";
+      const n = normalize(ans);
+      const ok =
+        n.includes("contigo") &&
+        n.includes("con calma") &&
+        (n.includes("sin presion") || n.includes("sin presion")) &&
+        n.includes("con intencion");
+
+      const fb = document.getElementById("feedback");
+      if (ok) {
+        fb.innerHTML = `<span class="good">Correcto 😌</span>`;
+        setTimeout(() => go(4), 500);
+      } else {
+        fb.innerHTML = `<span class="bad">Casi.</span> Intenta algo como: “contigo, con calma, sin presión, con intención”`;
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
