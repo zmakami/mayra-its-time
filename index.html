@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Último Nivel</title>
+  <title>You and Me</title>
 
   <style>
     :root{
@@ -28,7 +28,7 @@
       background:#030a07;
     }
 
-    /* Background video */
+    /* Background video - No funcional, problemas con compatibilidad de browser, lo dejaremos para ver si lo arreglamos despues - low prio */
     #bgvideo{
       position:fixed;
       top:50%; left:50%;
@@ -186,7 +186,7 @@
     .small{ font-size:13px; color:var(--muted); text-align:center; }
 
     /* =======================
-       INTRO OVERLAY (heart only + enter)
+       INTRO OVERLAY (corazon + boton)
     ======================= */
     #introScreen{
       position:fixed; inset:0;
@@ -235,7 +235,7 @@
       margin: 6px 0 18px;
     }
 
-    /* ✅ UPDATED: forest green + deeper glow */
+    /* ✅ UPDATED: color update / tambien el heartbeat effect */
 .heart{
   width:46px;
   height:46px;
@@ -263,7 +263,7 @@
     .heart::before{ top:-23px; left:0; }
     .heart::after{ left:23px; top:0; }
 
-    /* ✅ UPDATED: softer / deeper pulse */
+    /* ✅ UPDATED: pulse code */
     @keyframes heartbeat{
       0%   { transform: rotate(-45deg) scale(1);   filter: brightness(.95); }
       18%  { transform: rotate(-45deg) scale(1.08); filter: brightness(1.05); }
@@ -331,7 +331,7 @@
 const NAME = "Mayra";
 
 /* =======================
-   MUSIC (fade-in)
+   MUSIC (Taytay de hecho si esta bonita esta cancion lol)
 ======================= */
 const bgm = document.getElementById("bgm");
 let musicStarted = false;
@@ -368,20 +368,20 @@ function normalize(s){
 const steps = [
   {
     tag:"inicio",
-    title:`Hola, ${NAME}. 💚`,
+    title:`Hello, ${NAME}. 💚`,
     html:`
-      <p class="muted">Ok… esto es algo chiquito, pero lo hice con mucho amor.</p>
-      <p>Examen extraordinario. Sin presión 💚.</p>
+      <p class="muted">I made this for you.</p>
+      <p>Un examen! Sin presión 💚.</p>
       <div class="divider"></div>
       <p class="muted">Reglas:</p>
-      <p class="muted">1) No te saltes nada.<br>2) Si sonríes, vas bien.<br>3) Si te pones nerviosa… yo también 😌</p>
+      <p class="muted">1) Lee todo lentamente no hay prisa.<br>2) Si sonríes, vas bien.<br>3) Si te pones nerviosa… yo también 😌</p>
     `,
     buttons:[{ text:"Empezar", action:()=>{ startMusic(); go(1); } }]
   },
 
   {
     tag:"pregunta 1/6",
-    title:"Level 1 — Señal clarísima 😏",
+    title:"Act I — The spark",
     html:`
       <p>Prestamos atencion?</p>
       <p class="big"><b>¿Cuál es la señal más obvia de que me gustas?</b></p>
@@ -390,13 +390,14 @@ const steps = [
     buttons:[
       { text:"Me pierdo en tu mirada", action:()=>go(2) },
       { text:"Me dan ganas de verte aunque esté cansado", action:()=>go(2) },
-      { text:"Contigo siento mucha paz", action:()=>go(2) }
+      { text:"Contigo siento mucha paz", action:()=>go(2) },
+      { text:"Todas las anteriores", action:()=>go(2) }
     ]
   },
 
   {
     tag:"pregunta 2/6",
-    title:"Level 2 — Mayra? Daniel? 🧠",
+    title:"Act II — Mayra? Daniel? 🧠",
     html:`
       <p class="muted">Sera?</p>
       <p class="big"><b>Que vez en nosotros?</b></p>
@@ -412,7 +413,7 @@ const steps = [
 
   {
     tag:"pregunta 3/6",
-    title:"Level 3 — Completa la frase",
+    title:"Act III — Completa la frase",
     html:`
       <p>Quiero una respuesta tuya, no hay opción múltiple 😌</p>
       <p class="big"><b>Completa:</b> “Me tienes: ______.”</b></p>
@@ -437,7 +438,7 @@ const steps = [
 
   {
     tag:"pregunta 4/6",
-    title:"Level 4 — Desde cuando Mayra? 💚",
+    title:"Act IV — Desde cuando Mayra? 💚",
     html:`
       <p class="muted">A ver dime.</p>
       <p class="big"><b>¿Desde cuando nos viste futuro?</b></p>
@@ -452,7 +453,7 @@ const steps = [
 
   {
     tag:"pregunta 5/6",
-    title:"Level 5 — Race Day?😏",
+    title:"Act V — Race Day?😏",
     html:`
       <p class="muted">Si te ríes aquí, ya ganamos.</p>
       <p class="big"><b>Que medio maratón cambio todo?</b></p>
@@ -467,7 +468,7 @@ const steps = [
 
   {
     tag:"pregunta 6/6",
-    title:"Level 6 — The last one",
+    title:"Act VI — The last one",
     html:`
       <p>Última pregunta??.</p>
       <p class="big"><b>¿Como se llama el cuadernito que dejamos en el carro?</b></p>
@@ -482,10 +483,10 @@ const steps = [
 
   {
     tag:"nivel extra",
-    title:"Nivel extra — Memoria del corazón 🗓️",
+    title:"Act VII — Core Memory 💚",
     html:`
-      <p class="muted">Ok… esta sí importa.</p>
-      <p class="big"><b>¿Sabes cuándo fue nuestra primer cita?</b></p>
+      <p class="muted">Do you remember?</p>
+      <p class="big"><b>¿Recuerdas cuándo fue nuestra primer cita?</b></p>
       <p class="muted">Es válido: “41 de Enero”, “32/enero”, “22-ene”, “34/01”, “89-01”…</p>
       <input id="date" class="input" placeholder="99 de Enero?" autocomplete="off">
       <div id="fb7" class="hint">Tip: jaja enserio? <b>500</b> y <b>enero</b>… ya.</div>
@@ -510,13 +511,13 @@ const steps = [
 
   {
     tag:"🔓",
-    title:"Desbloqueaste una pregunta secreta",
+    title:"Final Act Unlocked",
     html:`
-      <p class="big"><b>Ok… entonces sí te acuerdas.</b></p>
+      <p class="big"><b>Ok… so you do remember.😏</b></p>
       <p>Y si te acuerdas de eso, es porque lo que estamos viviendo importa.</p>
-      <p class="muted">No es un juego ya… pero quiero hacerlo bonito.</p>
+      <p class="muted">Hay que hacer esto bien.</p>
     `,
-    buttons:[{ text:"Siguiente", action:()=>go(9) }]
+    buttons:[{ text:"Next", action:()=>go(9) }]
   },
 
   {
@@ -551,20 +552,20 @@ const steps = [
     html:`
       <p class="big"><b>Última confirmación:</b></p>
       <p class="big"><b>¿Estás lista?</b></p>
-      <p class="muted">Yo sí.</p>
+      <p class="muted">Porque yo sí.</p>
     `,
     buttons:[ { text:"Sí 😌", action:()=>go(12) } ]
   },
 
   {
     tag:"final",
-    title:"Último nivel",
+    title:"Act VIII — The promise💚",
     html:`
       <p class="muted">I'm ready…</p>
       <p>Me gusta cómo se siente estar contigo. Me gusta que contigo todo se siente más fácil, más real, más bonito.</p>
       <p>No quiero correr. Solo quiero elegirte bien: con calma y con amor.</p>
       <div class="divider"></div>
-      <p class="big"><b>${NAME}… Daniel te preguntara algo.</b></p>
+      <p class="big"><b>${NAME}… te quiero preguntar algo.</b></p>
     `,
     buttons:[
       { text:"Sí 💚", action:()=>go(13) },
