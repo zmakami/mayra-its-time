@@ -290,9 +290,8 @@ const steps = [
     tag:"inicio",
     title:`Hola, ${NAME}. 💚`,
     html:`
-      <p class="muted">Ok… esto es algo chiquito, pero lo hice con amor.</p>
-      <p>Me gusta lo que estamos viviendo porque se siente real.</p>
-      <p>Así que te armé un juego rápido. Sin presión 💚.</p>
+      <p class="muted">Ok… esto es algo chiquito, pero lo hice con mucho amor.</p>
+      <p>Examen extraordinario. Sin presión 💚.</p>
       <div class="divider"></div>
       <p class="muted">Reglas:</p>
       <p class="muted">1) No te saltes nada.<br>2) Si sonríes, vas bien.<br>3) Si te pones nerviosa… yo también 😌</p>
@@ -324,9 +323,9 @@ const steps = [
       <p>Elige la opción que te diga tu kokoro:</p>
     `,
     buttons:[
-      { text:"Nuevos companeros de baile! ", action:()=>go(3) },
+      { text:"Nuevos compañeros de baile! ", action:()=>go(3) },
       { text:"Algo no planeado pero que quiero seguir ", action:()=>go(3) },
-      { text:"Una tranquilidad perfecta con un amor sin esfuerzo", action:()=>go(3) },
+      { text:"Una tranquilidad perfecta", action:()=>go(3) },
       { text:"No mucho la verdad 😏", action:()=>go(3) }
     ]
   },
@@ -335,7 +334,7 @@ const steps = [
     tag:"pregunta 3/6",
     title:"Level 3 — Completa la frase",
     html:`
-      <p>Quiero una respuesta tuya, no de opción múltiple 😌</p>
+      <p>Quiero una respuesta tuya, no hay opción múltiple 😌</p>
       <p class="big"><b>Completa:</b> “Me tienes: ______.”</p>
       <p class="muted">Una o dos palabras. Lo primero que te salga.</p>
       <input id="a3" class="input" placeholder="Escríbelo aquí…" autocomplete="off">
@@ -349,8 +348,8 @@ const steps = [
         }
       },
       { text:"Dame idea", secondary:true, action:()=>{
-          el("a3").value = "NO tu";
-          el("fb3").innerHTML = `<span class="ok">Esooo.</span> Ahora sí.`;
+          el("a3").value = "hasta la madre";
+          el("fb3").innerHTML = `<span class="ok">Si.</span> ?.`;
         }
       }
     ]
@@ -373,31 +372,31 @@ const steps = [
 
   {
     tag:"pregunta 5/6",
-    title:"Nivel 5 — Trampa bonita 😏",
+    title:"Level 5 — Race Day?😏",
     html:`
       <p class="muted">Si te ríes aquí, ya ganamos.</p>
-      <p class="big"><b>Si yo pudiera pedir un “power-up” para lo nuestro, sería:</b></p>
-      <p class="muted">Elige el que sienta más tú.</p>
+      <p class="big"><b>Que medio maratón cambio todo?</b></p>
+      <p class="muted">Piénsalo bien.</p>
     `,
     buttons:[
-      { text:"Más momentos simples que se sientan enormes", action:()=>go(6) },
-      { text:"Más besos… y menos miedo", action:()=>go(6) },
-      { text:"Más tú aquí… conmigo", action:()=>go(6) }
+      { text:"Medio Maratón Tijuana 2023", action:()=>go(6) },
+      { text:"Medio Maratón UABC 2025", action:()=>go(6) },
+      { text:"Medio Maratón SatBoyz 2026", action:()=>go(6) }
     ]
   },
 
   {
     tag:"pregunta 6/6",
-    title:"Nivel 6 — La más real",
+    title:"Level 6 — The last one",
     html:`
-      <p>Última de las “normales”.</p>
-      <p class="big"><b>¿Cuál es la diferencia entre gustar y elegir?</b></p>
-      <p class="muted">No hay respuesta perfecta… pero sí una que se siente verdadera.</p>
+      <p>Última pregunta??.</p>
+      <p class="big"><b>¿Como se llama el cuadernito que dejamos en el carro?</b></p>
+      <p class="muted">El nombre es importante.</p>
     `,
     buttons:[
-      { text:"Gustar es emoción; elegir es intención", action:()=>go(7) },
-      { text:"Gustar es hoy; elegir es seguir mañana", action:()=>go(7) },
-      { text:"Gustar es fácil; elegir es cuidarlo", action:()=>go(7) }
+      { text:"Sky Journal", action:()=>go(7) },
+      { text:"Star Notebook", action:()=>go(7) },
+      { text:"Star Diary", action:()=>go(7) }
     ]
   },
 
@@ -407,9 +406,9 @@ const steps = [
     html:`
       <p class="muted">Ok… esta sí importa.</p>
       <p class="big"><b>¿Sabes cuándo fue nuestra primer cita?</b></p>
-      <p class="muted">Es válido: “18 de Enero”, “18/enero”, “18-ene”, “18/01”, “18-01”…</p>
-      <input id="date" class="input" placeholder="18 de Enero" autocomplete="off">
-      <div id="fb7" class="hint">Tip: con que salga <b>18</b> y <b>enero</b>… ya.</div>
+      <p class="muted">Es válido: “41 de Enero”, “32/enero”, “22-ene”, “34/01”, “89-01”…</p>
+      <input id="date" class="input" placeholder="99 de Enero?" autocomplete="off">
+      <div id="fb7" class="hint">Tip: jaja enserio? <b>500</b> y <b>enero</b>… ya.</div>
     `,
     buttons:[
       { text:"Confirmar", action:()=>{
@@ -418,12 +417,12 @@ const steps = [
             el("fb7").innerHTML = `<span class="ok">Correcto.</span> 💚`;
             setTimeout(()=>go(8), 650);
           } else {
-            el("fb7").innerHTML = `<span class="no">Casi.</span> Pista: fue el <b>18</b>… de <b>Enero</b> 😏`;
+            el("fb7").innerHTML = `<span class="no">Casi.</span> Pista: fue el <b>800</b>… de <b>Enero</b> 😏`;
           }
         }
       },
       { text:"Dame pista", secondary:true, action:()=>{
-          el("fb7").innerHTML = `Pista: número <b>18</b> + mes <b>Enero</b> 😉`;
+          el("fb7").innerHTML = `Pista: número <b>2222</b> + mes <b>Enero</b> 😉`;
         }
       }
     ]
@@ -481,11 +480,11 @@ const steps = [
     tag:"final",
     title:"Último nivel",
     html:`
-      <p class="muted">Ya fuera de juego…</p>
+      <p class="muted">I'm ready…</p>
       <p>Me gusta cómo se siente estar contigo. Me gusta que contigo todo se siente más fácil, más real, más bonito.</p>
-      <p>No quiero correr. Solo quiero elegirte bien: con calma y con intención.</p>
+      <p>No quiero correr. Solo quiero elegirte bien: con calma y con amor.</p>
       <div class="divider"></div>
-      <p class="big"><b>${NAME}… ¿quieres ser mi novia?</b></p>
+      <p class="big"><b>${NAME}… Daniel te preguntara algo.</b></p>
     `,
     buttons:[
       { text:"Sí 💚", action:()=>go(13) },
