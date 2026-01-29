@@ -186,74 +186,6 @@
     .small{ font-size:13px; color:var(--muted); text-align:center; }
 
     /* =======================
-       PROGRESS DOCK (bottom, centered)
-    ======================= */
-    .progressDock{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:12px;
-      margin: 14px 0 6px;
-      user-select:none;
-    }
-
-    .barwrap{
-      width:min(520px, 72%);
-      height:10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.18);
-      overflow:hidden;
-      transition: opacity .25s ease;
-    }
-    .barfill{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(49,196,141,.35), rgba(110,242,193,.55));
-      box-shadow:0 0 18px rgba(49,196,141,.35);
-      border-radius:999px;
-      transition: width .35s ease;
-    }
-
-    /* smaller hearts that "approach" */
-    .pHeart{
-      width:16px;
-      height:16px;
-      position:relative;
-      transform: rotate(-45deg);
-      border-radius:4px;
-      transition: transform .45s ease, filter .45s ease, opacity .25s ease;
-      filter: drop-shadow(0 0 10px rgba(49,196,141,.16));
-      opacity: .95;
-      flex: 0 0 auto;
-    }
-    .pHeart::before,
-    .pHeart::after{
-      content:"";
-      position:absolute;
-      width:16px;
-      height:16px;
-      border-radius:50%;
-      background: inherit;
-    }
-    .pHeart::before{ top:-8px; left:0; }
-    .pHeart::after{ left:8px; top:0; }
-
-    .pHeart.green{ background: rgba(49,196,141,.92); }
-    .pHeart.red{ background: rgba(255,77,109,.95); filter: drop-shadow(0 0 12px rgba(255,77,109,.22)); }
-
-    .pHeart.final{
-      display:none;
-      transform: rotate(-45deg) scale(1.08);
-      animation: finalPop .55s ease both;
-    }
-    @keyframes finalPop{
-      0%{ transform: rotate(-45deg) scale(.75); opacity:.2; }
-      55%{ transform: rotate(-45deg) scale(1.15); opacity:1; }
-      100%{ transform: rotate(-45deg) scale(1.00); opacity:1; }
-    }
-
-    /* =======================
        INTRO OVERLAY (heart only + enter)
     ======================= */
     #introScreen{
@@ -276,7 +208,7 @@
       border-radius:22px;
       background: rgba(255,255,255,.035);
       box-shadow: 0 22px 80px rgba(0,0,0,.55);
-      padding:28px 22px 22px;
+      padding:24px 22px 20px;
       text-align:center;
       position:relative;
       overflow:hidden;
@@ -303,29 +235,31 @@
       margin: 6px 0 18px;
     }
 
+    /* ✅ half size heart */
     .heart{
-      width:92px;
-      height:92px;
+      width:46px;
+      height:46px;
       position:relative;
       transform: rotate(-45deg);
       background: rgba(49,196,141,.95);
-      box-shadow: 0 0 28px rgba(49,196,141,.22), 0 0 70px rgba(49,196,141,.10);
+      box-shadow: 0 0 22px rgba(49,196,141,.18), 0 0 50px rgba(49,196,141,.08);
       animation: heartbeat 1.05s ease-in-out infinite;
-      border-radius:16px;
+      border-radius:10px;
+      margin: 0 auto;
     }
 
     .heart::before,
     .heart::after{
       content:"";
       position:absolute;
-      width:92px;
-      height:92px;
+      width:46px;
+      height:46px;
       background: rgba(49,196,141,.95);
       border-radius:50%;
     }
 
-    .heart::before{ top:-46px; left:0; }
-    .heart::after{ left:46px; top:0; }
+    .heart::before{ top:-23px; left:0; }
+    .heart::after{ left:23px; top:0; }
 
     @keyframes heartbeat{
       0%   { transform: rotate(-45deg) scale(1);   filter: brightness(1); }
@@ -350,7 +284,7 @@
   </video>
   <div class="overlay"></div>
 
-  <!-- 💚 Intro Screen (heart + Enter only) -->
+  <!-- 💚 Intro Screen -->
   <div id="introScreen" aria-label="Intro">
     <div class="introCard">
       <div class="introInner">
@@ -378,21 +312,11 @@
 
         <div class="hud">
           <div class="checkpoints" id="checkpoints"></div>
-          <!-- XP REMOVED -->
         </div>
       </div>
 
       <h1 id="title">Cargando…</h1>
       <div id="content"></div>
-
-      <!-- ✅ Progress centered under the questionnaire -->
-      <div class="progressDock" aria-label="Progreso">
-        <div class="pHeart green" id="pHeartL" aria-hidden="true"></div>
-        <div class="barwrap" id="barwrap"><div class="barfill" id="barfill"></div></div>
-        <div class="pHeart green" id="pHeartR" aria-hidden="true"></div>
-        <div class="pHeart red final" id="pHeartFinal" aria-hidden="true"></div>
-      </div>
-
       <div class="btns" id="btns"></div>
     </div>
   </div>
@@ -488,7 +412,7 @@ const steps = [
     title:"Level 3 — Completa la frase",
     html:`
       <p>Quiero una respuesta tuya, no hay opción múltiple 😌</p>
-      <p class="big"><b>Completa:</b> “Me tienes: ______.”</p>
+      <p class="big"><b>Completa:</b> “Me tienes: ______.”</b></p>
       <p class="muted">Una o dos palabras. Lo primero que te salga.</p>
       <input id="a3" class="input" placeholder="Escríbelo aquí…" autocomplete="off">
       <div id="fb3" class="hint">Tip: puede ser “harta”, “feliz”, “cansada”, “💚”…</div>
@@ -682,39 +606,8 @@ const steps = [
 ======================= */
 const checkpointSteps = new Set([0,3,7,12,13]);
 
-/* hearts + bar behavior */
-function renderProgressDock(pct){
-  const left = el("pHeartL");
-  const right = el("pHeartR");
-  const final = el("pHeartFinal");
-  const wrap = el("barwrap");
-
-  const t = Math.max(0, Math.min(1, pct/100));
-  const maxTravel = 54; // more noticeable approach
-  const travel = Math.round(maxTravel * (1 - t));
-
-  left.style.transform  = `translateX(${-travel}px) rotate(-45deg) scale(${1 + t*0.04})`;
-  right.style.transform = `translateX(${travel}px) rotate(-45deg) scale(${1 + t*0.04})`;
-
-  if (pct >= 100){
-    left.style.opacity = "0";
-    right.style.opacity = "0";
-    wrap.style.opacity = "0";
-    final.style.display = "block";
-  } else {
-    left.style.opacity = "0.95";
-    right.style.opacity = "0.95";
-    wrap.style.opacity = "1";
-    final.style.display = "none";
-  }
-}
-
 function renderHUD(){
   el("tag").textContent = steps[step].tag || "último nivel";
-
-  const pct = Math.round((step / (steps.length - 1)) * 100);
-  el("barfill").style.width = `${pct}%`;
-  renderProgressDock(pct);
 
   const cpWrap = el("checkpoints");
   cpWrap.innerHTML = "";
@@ -879,12 +772,10 @@ function render(withAnim=false){
   }
 }
 
-/* Init (single DOMContentLoaded) */
+/* Init */
 document.addEventListener("DOMContentLoaded", ()=>{
-  // render game under the intro
   render(false);
 
-  // intro hooks
   const intro = document.getElementById("introScreen");
   const btn = document.getElementById("introStart");
 
