@@ -235,14 +235,17 @@
       margin: 6px 0 18px;
     }
 
-    /* ✅ half size heart */
+    /* ✅ UPDATED: forest green + deeper glow */
     .heart{
       width:46px;
       height:46px;
       position:relative;
       transform: rotate(-45deg);
-      background: rgba(49,196,141,.95);
-      box-shadow: 0 0 22px rgba(49,196,141,.18), 0 0 50px rgba(49,196,141,.08);
+      background: rgba(18, 92, 68, .96);
+      box-shadow:
+        0 0 12px rgba(18, 92, 68, .45),
+        0 0 38px rgba(18, 92, 68, .25),
+        0 0 80px rgba(18, 92, 68, .15);
       animation: heartbeat 1.05s ease-in-out infinite;
       border-radius:10px;
       margin: 0 auto;
@@ -254,18 +257,19 @@
       position:absolute;
       width:46px;
       height:46px;
-      background: rgba(49,196,141,.95);
+      background: rgba(18, 92, 68, .96);
       border-radius:50%;
     }
 
     .heart::before{ top:-23px; left:0; }
     .heart::after{ left:23px; top:0; }
 
+    /* ✅ UPDATED: softer / deeper pulse */
     @keyframes heartbeat{
-      0%   { transform: rotate(-45deg) scale(1);   filter: brightness(1); }
-      18%  { transform: rotate(-45deg) scale(1.10); filter: brightness(1.08); }
+      0%   { transform: rotate(-45deg) scale(1);   filter: brightness(.95); }
+      18%  { transform: rotate(-45deg) scale(1.08); filter: brightness(1.05); }
       34%  { transform: rotate(-45deg) scale(1.00); }
-      52%  { transform: rotate(-45deg) scale(1.08); filter: brightness(1.06); }
+      52%  { transform: rotate(-45deg) scale(1.06); filter: brightness(1.02); }
       70%  { transform: rotate(-45deg) scale(1.00); }
       100% { transform: rotate(-45deg) scale(1); }
     }
