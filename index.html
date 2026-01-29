@@ -182,7 +182,7 @@
     }
     .hint{ margin-top:10px; font-size:13px; color:var(--muted); }
 
-    /* SAFE animation: content is ALWAYS visible, animation is just a bonus */
+  
     .swap{ animation: swapIn .28s ease both; }
     @keyframes swapIn{
       from{ opacity:0; transform: translateY(10px); }
@@ -290,9 +290,9 @@ const steps = [
     tag:"inicio",
     title:`Hola, ${NAME}. 💚`,
     html:`
-      <p class="muted">Ok… esto es algo chiquito, pero lo hice con intención.</p>
-      <p>Me gusta lo que estamos viviendo porque se siente fácil. No por “simple”, sino por real.</p>
-      <p>Así que te armé un juego rápido: bonito, inteligente, y muy nosotros. Sin presión.</p>
+      <p class="muted">Ok… esto es algo chiquito, pero lo hice con amor.</p>
+      <p>Me gusta lo que estamos viviendo porque se siente real.</p>
+      <p>Así que te armé un juego rápido. Sin presión 💚.</p>
       <div class="divider"></div>
       <p class="muted">Reglas:</p>
       <p class="muted">1) No te saltes nada.<br>2) Si sonríes, vas bien.<br>3) Si te pones nerviosa… yo también 😌</p>
@@ -302,53 +302,54 @@ const steps = [
 
   {
     tag:"pregunta 1/6",
-    title:"Nivel 1 — Señal clarísima 😏",
+    title:"Level 1 — Señal clarísima 😏",
     html:`
-      <p>Empezamos suave, pero real.</p>
+      <p>Prestamos atencion?</p>
       <p class="big"><b>¿Cuál es la señal más obvia de que me gustas?</b></p>
-      <p class="muted">No te asustes: todas son verdad… solo elige la que más te dé risa.</p>
+      <p class="muted">Piensale bien.</p>
     `,
     buttons:[
-      { text:"Me importa tu día de verdad", action:()=>go(2) },
+      { text:"Me pierdo en tu mirada", action:()=>go(2) },
       { text:"Me dan ganas de verte aunque esté cansado", action:()=>go(2) },
-      { text:"Contigo me da paz (y eso no es común)", action:()=>go(2) }
+      { text:"Contigo siento mucha paz", action:()=>go(2) }
     ]
   },
 
   {
     tag:"pregunta 2/6",
-    title:"Nivel 2 — Lectura fina 🧠",
+    title:"Level 2 — Mayra? Daniel? 🧠",
     html:`
-      <p class="muted">Esta es de esas que dicen mucho sin decirlo.</p>
-      <p class="big"><b>Cuando alguien te importa… ¿qué cambia?</b></p>
-      <p>Elige la opción más “nosotros”:</p>
+      <p class="muted">Sera?</p>
+      <p class="big"><b>Que vez en nosotros?</b></p>
+      <p>Elige la opción que te diga tu kokoro:</p>
     `,
     buttons:[
-      { text:"Dejas de fingir y te sientes tú", action:()=>go(3) },
-      { text:"Todo se vuelve más simple, pero más bonito", action:()=>go(3) },
-      { text:"Ya no buscas emoción… buscas calma", action:()=>go(3) }
+      { text:"Nuevos companeros de baile! ", action:()=>go(3) },
+      { text:"Algo no planeado pero que quiero seguir ", action:()=>go(3) },
+      { text:"Una tranquilidad perfecta con un amor sin esfuerzo", action:()=>go(3) },
+      { text:"No mucho la verdad 😏", action:()=>go(3) }
     ]
   },
 
   {
     tag:"pregunta 3/6",
-    title:"Nivel 3 — Completa la frase",
+    title:"Level 3 — Completa la frase",
     html:`
       <p>Quiero una respuesta tuya, no de opción múltiple 😌</p>
-      <p class="big"><b>Completa:</b> “Se siente ______ contigo.”</p>
+      <p class="big"><b>Completa:</b> “Me tienes: ______.”</p>
       <p class="muted">Una o dos palabras. Lo primero que te salga.</p>
       <input id="a3" class="input" placeholder="Escríbelo aquí…" autocomplete="off">
-      <div id="fb3" class="hint">Tip: puede ser “fácil”, “bonito”, “real”, “en paz”…</div>
+      <div id="fb3" class="hint">Tip: puede ser “harta”, “feliz”, “cansada”, “💚”…</div>
     `,
     buttons:[
       { text:"Continuar", action:()=>{
           const v = normalize(el("a3").value);
           if(v.length >= 2) go(4);
-          else el("fb3").innerHTML = `<span class="no">Pon algo chiquito pero real 😌</span>`;
+          else el("fb3").innerHTML = `<span class="no">Come on, pon algo 😌</span>`;
         }
       },
       { text:"Dame idea", secondary:true, action:()=>{
-          el("a3").value = "fácil y bonito";
+          el("a3").value = "NO tu";
           el("fb3").innerHTML = `<span class="ok">Esooo.</span> Ahora sí.`;
         }
       }
@@ -357,16 +358,16 @@ const steps = [
 
   {
     tag:"pregunta 4/6",
-    title:"Nivel 4 — La respuesta adulta 💚",
+    title:"Level 4 — Desde cuando Mayra? 💚",
     html:`
-      <p class="muted">Romántica sin ser cursi.</p>
-      <p class="big"><b>¿Qué te convence de algo bonito?</b></p>
+      <p class="muted">A ver dime.</p>
+      <p class="big"><b>¿Desde cuando nos viste futuro?</b></p>
       <p>Elige:</p>
     `,
     buttons:[
-      { text:"Que se sienta natural, no forzado", action:()=>go(5) },
-      { text:"Que haya intención, no prisa", action:()=>go(5) },
-      { text:"Que haya paz… y ganas", action:()=>go(5) }
+      { text:"De que hablas loco?", action:()=>go(5) },
+      { text:"Since our first date", action:()=>go(5) },
+      { text:"*Te lo dire con palabras*", action:()=>go(5) }
     ]
   },
 
