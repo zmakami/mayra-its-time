@@ -122,17 +122,9 @@
       transform: translateY(-1px);
     }
 
-    .xp{
-      font-size:11px;
-      letter-spacing:.12em;
-      color:var(--muted);
-      white-space:nowrap;
-    }
-    .xp b{ color: var(--ink); letter-spacing:.08em; }
-
     /* Content */
-    h1{ margin:0 0 10px; font-size:22px; letter-spacing:.2px; }
-    p{ margin:10px 0; line-height:1.62; }
+    h1{ margin:0 0 10px; font-size:22px; letter-spacing:.2px; text-align:center; }
+    p{ margin:10px 0; line-height:1.62; text-align:center; }
     .muted{ color:var(--muted); font-size:14px; }
     .divider{ height:1px; background: var(--line); margin:14px 0; }
     .big{ font-size:18px; }
@@ -164,8 +156,9 @@
       background: rgba(0,0,0,.20); color:var(--ink);
       outline:none;
       font-size:16px;
+      text-align:center;
     }
-    .hint{ margin-top:10px; font-size:13px; color:var(--muted); }
+    .hint{ margin-top:10px; font-size:13px; color:var(--muted); text-align:center; }
 
     .swap{ animation: swapIn .28s ease both; }
     @keyframes swapIn{
@@ -180,6 +173,7 @@
       border-radius:16px;
       padding:14px;
       box-shadow: 0 0 22px rgba(255,179,179,.08);
+      text-align:center;
     }
     .errorTitle{
       font-weight:900;
@@ -187,8 +181,9 @@
       text-transform:uppercase;
       margin:0 0 6px;
       color:var(--warn);
+      text-align:center;
     }
-    .small{ font-size:13px; color:var(--muted); }
+    .small{ font-size:13px; color:var(--muted); text-align:center; }
 
     /* =======================
        PROGRESS DOCK (bottom, centered)
@@ -209,6 +204,7 @@
       border:1px solid var(--line);
       background: rgba(0,0,0,.18);
       overflow:hidden;
+      transition: opacity .25s ease;
     }
     .barfill{
       height:100%;
@@ -219,15 +215,15 @@
       transition: width .35s ease;
     }
 
-    /* hearts that "approach" */
+    /* smaller hearts that "approach" */
     .pHeart{
-      width:22px;
-      height:22px;
+      width:16px;
+      height:16px;
       position:relative;
       transform: rotate(-45deg);
-      border-radius:5px;
+      border-radius:4px;
       transition: transform .45s ease, filter .45s ease, opacity .25s ease;
-      filter: drop-shadow(0 0 10px rgba(49,196,141,.18));
+      filter: drop-shadow(0 0 10px rgba(49,196,141,.16));
       opacity: .95;
       flex: 0 0 auto;
     }
@@ -235,30 +231,30 @@
     .pHeart::after{
       content:"";
       position:absolute;
-      width:22px;
-      height:22px;
+      width:16px;
+      height:16px;
       border-radius:50%;
       background: inherit;
     }
-    .pHeart::before{ top:-11px; left:0; }
-    .pHeart::after{ left:11px; top:0; }
+    .pHeart::before{ top:-8px; left:0; }
+    .pHeart::after{ left:8px; top:0; }
 
     .pHeart.green{ background: rgba(49,196,141,.92); }
     .pHeart.red{ background: rgba(255,77,109,.95); filter: drop-shadow(0 0 12px rgba(255,77,109,.22)); }
 
     .pHeart.final{
       display:none;
-      transform: rotate(-45deg) scale(1.05);
+      transform: rotate(-45deg) scale(1.08);
       animation: finalPop .55s ease both;
     }
     @keyframes finalPop{
       0%{ transform: rotate(-45deg) scale(.75); opacity:.2; }
-      55%{ transform: rotate(-45deg) scale(1.12); opacity:1; }
+      55%{ transform: rotate(-45deg) scale(1.15); opacity:1; }
       100%{ transform: rotate(-45deg) scale(1.00); opacity:1; }
     }
 
     /* =======================
-       INTRO OVERLAY (heart)
+       INTRO OVERLAY (heart only + enter)
     ======================= */
     #introScreen{
       position:fixed; inset:0;
@@ -275,12 +271,12 @@
     }
 
     .introCard{
-      width:min(560px, 100%);
+      width:min(520px, 100%);
       border:1px solid var(--line);
       border-radius:22px;
       background: rgba(255,255,255,.035);
       box-shadow: 0 22px 80px rgba(0,0,0,.55);
-      padding:22px;
+      padding:28px 22px 22px;
       text-align:center;
       position:relative;
       overflow:hidden;
@@ -304,32 +300,32 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      margin: 6px 0 14px;
+      margin: 6px 0 18px;
     }
 
     .heart{
-      width:78px;
-      height:78px;
+      width:92px;
+      height:92px;
       position:relative;
       transform: rotate(-45deg);
       background: rgba(49,196,141,.95);
       box-shadow: 0 0 28px rgba(49,196,141,.22), 0 0 70px rgba(49,196,141,.10);
       animation: heartbeat 1.05s ease-in-out infinite;
-      border-radius:14px;
+      border-radius:16px;
     }
 
     .heart::before,
     .heart::after{
       content:"";
       position:absolute;
-      width:78px;
-      height:78px;
+      width:92px;
+      height:92px;
       background: rgba(49,196,141,.95);
       border-radius:50%;
     }
 
-    .heart::before{ top:-39px; left:0; }
-    .heart::after{ left:39px; top:0; }
+    .heart::before{ top:-46px; left:0; }
+    .heart::after{ left:46px; top:0; }
 
     @keyframes heartbeat{
       0%   { transform: rotate(-45deg) scale(1);   filter: brightness(1); }
@@ -340,22 +336,9 @@
       100% { transform: rotate(-45deg) scale(1); }
     }
 
-    .introTitle{
-      margin: 0 0 6px;
-      font-size:20px;
-      letter-spacing:.2px;
-    }
-
-    .introSub{
-      margin: 0 0 16px;
-      color: var(--muted);
-      font-size:14px;
-      line-height:1.5;
-    }
-
     #introStart{
       width:100%;
-      margin-top: 10px;
+      margin-top: 6px;
     }
   </style>
 </head>
@@ -367,17 +350,14 @@
   </video>
   <div class="overlay"></div>
 
-  <!-- 💚 Intro Screen -->
+  <!-- 💚 Intro Screen (heart + Enter only) -->
   <div id="introScreen" aria-label="Intro">
     <div class="introCard">
       <div class="introInner">
         <div class="heartWrap">
           <div class="heart" aria-hidden="true"></div>
         </div>
-        <h2 class="introTitle">Presiona para empezar 💚</h2>
-        <p class="introSub">Prometo que esto es rápido, divertido… y un poquito peligroso 😏</p>
-        <button id="introStart">Entrar</button>
-        <p class="hint" style="margin-top:10px;">(Al entrar, empieza la música 🎵)</p>
+        <button id="introStart">Enter</button>
       </div>
     </div>
   </div>
@@ -398,7 +378,7 @@
 
         <div class="hud">
           <div class="checkpoints" id="checkpoints"></div>
-          <div class="xp" id="xp">XP <b>0</b></div>
+          <!-- XP REMOVED -->
         </div>
       </div>
 
@@ -445,8 +425,6 @@ function startMusic(){
    HELPERS
 ======================= */
 let step = 0;
-let xp = 0;
-const maxXP = 1000;
 
 function el(id){ return document.getElementById(id); }
 function normalize(s){
@@ -700,15 +678,9 @@ const steps = [
 ];
 
 /* =======================
-   HUD: XP + Checkpoints
+   HUD: Checkpoints
 ======================= */
 const checkpointSteps = new Set([0,3,7,12,13]);
-
-function stepToXP(n){
-  const t = n / (steps.length - 1);
-  const eased = t*t*(3 - 2*t);
-  return Math.round(eased * maxXP);
-}
 
 /* hearts + bar behavior */
 function renderProgressDock(pct){
@@ -717,26 +689,22 @@ function renderProgressDock(pct){
   const final = el("pHeartFinal");
   const wrap = el("barwrap");
 
-  // hearts "approach" center
   const t = Math.max(0, Math.min(1, pct/100));
-  const maxTravel = 46; // px, tweak if you want more/less movement
+  const maxTravel = 54; // more noticeable approach
   const travel = Math.round(maxTravel * (1 - t));
 
   left.style.transform  = `translateX(${-travel}px) rotate(-45deg) scale(${1 + t*0.04})`;
   right.style.transform = `translateX(${travel}px) rotate(-45deg) scale(${1 + t*0.04})`;
 
-  // final: become a red heart at 100%
   if (pct >= 100){
     left.style.opacity = "0";
     right.style.opacity = "0";
     wrap.style.opacity = "0";
-
     final.style.display = "block";
   } else {
     left.style.opacity = "0.95";
     right.style.opacity = "0.95";
     wrap.style.opacity = "1";
-
     final.style.display = "none";
   }
 }
@@ -747,9 +715,6 @@ function renderHUD(){
   const pct = Math.round((step / (steps.length - 1)) * 100);
   el("barfill").style.width = `${pct}%`;
   renderProgressDock(pct);
-
-  xp = Math.max(xp, stepToXP(step));
-  el("xp").innerHTML = `XP <b>${xp}</b>`;
 
   const cpWrap = el("checkpoints");
   cpWrap.innerHTML = "";
@@ -929,10 +894,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
   }
 
   btn.addEventListener("click", enterGame);
-  intro.addEventListener("click", (e)=>{
-    if (e.target && e.target.id === "introStart") return;
-    enterGame();
-  }, { once:true });
 });
 </script>
 </body>
