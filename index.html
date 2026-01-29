@@ -1,408 +1,431 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Para Mayra 💚</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Último Nivel</title>
 
   <style>
-    /* ===== RESET ===== */
-    * {
-      box-sizing: border-box;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
+    :root{
+      --bg:#06110d;
+      --ink:#e7fff4;
+      --muted:#b7d9c9;
+      --line:#0e2f25;
+      --accent:#31c48d;
+    }
+    *{box-sizing:border-box}
+
+    body{
+      margin:0; min-height:100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--ink);
+      display:flex; align-items:center; justify-content:center;
+      padding:24px;
+      overflow:hidden;
+      background:#030a07;
     }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: black;
-      color: #e6f2ea;
+    /* ====== VIDEO BACKGROUND (local) ====== */
+    #bgvideo{
+      position:fixed;
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      min-width:100%;
+      min-height:100%;
+      width:auto;
+      height:auto;
+      z-index:-2;
+      object-fit:cover;
+      filter: blur(2px) brightness(.50) contrast(1.12);
+      opacity:.20; /* sutil */
     }
 
-    /* ===== VIDEO BACKGROUND ===== */
-    #bg-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: -2;
-      opacity: 0.25;
-      filter: blur(1px);
+    /* capa para mantener el mood verde oscuro y legibilidad */
+    .overlay{
+      position:fixed; inset:0;
+      z-index:-1;
+      background: radial-gradient(1200px 700px at 50% 35%,
+        rgba(10,42,31,.55) 0%,
+        rgba(6,17,13,.86) 55%,
+        rgba(3,10,7,.93) 100%);
     }
 
-    /* ===== OVERLAY ===== */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 40, 30, 0.55);
-      z-index: -1;
+    /* ====== CARD ====== */
+    .card{
+      width:min(760px,100%);
+      background: rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:22px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      backdrop-filter: blur(8px);
     }
+    .topbar{
+      display:flex; justify-content:space-between; align-items:center;
+      font-size:12px; letter-spacing:.15em; text-transform:uppercase;
+      color:var(--muted); margin-bottom:10px;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background:var(--accent);
+      box-shadow:0 0 16px rgba(49,196,141,.6);
+      display:inline-block;margin-right:8px;
+    }
+    h1{margin:0 0 10px;font-size:22px; letter-spacing:.2px}
+    p{margin:10px 0;line-height:1.62}
+    .muted{color:var(--muted);font-size:14px}
+    .btns{display:grid;gap:10px;margin-top:18px}
+    button{
+      border:1px solid var(--line);
+      background: rgba(49,196,141,.15);
+      color:var(--ink);
+      padding:14px;
+      border-radius:14px;
+      font-weight:700;
+      cursor:pointer;
+      transition: transform .06s ease, background .2s ease;
+    }
+    button:hover{background: rgba(49,196,141,.25)}
+    button:active{transform: translateY(1px)}
+    button.secondary{ background: transparent; color:var(--muted); }
+    button.secondary:hover{background: rgba(255,255,255,.03); color:var(--ink)}
 
-    /* ===== MAIN CONTAINER ===== */
-    .container {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 24px;
+    .input{
+      width:100%;padding:12px;margin-top:12px;
+      border-radius:12px;border:1px solid var(--line);
+      background: rgba(0,0,0,.20);color:var(--ink);
+      outline:none;
+      font-size:16px;
     }
-
-    .card {
-      max-width: 520px;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.35);
-      border-radius: 18px;
-      padding: 32px 26px;
-      box-shadow: 0 20px 40px rgba(0,0,0,.45);
-      animation: fadeIn 1.2s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    h1 {
-      font-weight: 500;
-      margin-bottom: 12px;
-    }
-
-    p {
-      line-height: 1.7;
-      margin-bottom: 22px;
-      font-size: 1.05rem;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      margin-bottom: 16px;
-      font-size: 1rem;
-      text-align: center;
-    }
-
-    button {
-      padding: 12px 26px;
-      border-radius: 999px;
-      border: none;
-      background: #2f6f5a;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform .2s, background .2s;
-      margin: 6px;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-      background: #3e8b72;
-    }
-
-    .number {
-      opacity: .6;
-      margin-bottom: 10px;
-    }
-
-    /* ===== Screen transition: fade + zoom ===== */
-    .screen-enter {
-      animation: screenEnter 520ms ease both;
-    }
-    @keyframes screenEnter {
-      from { opacity: 0; transform: scale(0.965); filter: blur(2px); }
-      to   { opacity: 1; transform: scale(1);     filter: blur(0); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ===== Confetti canvas ===== */
-    #confetti {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 9999;
-      display: none;
-    }
+    .hint{margin-top:10px;font-size:13px;color:var(--muted)}
+    .ok{color:#7CFCB2;font-weight:800}
+    .no{color:#ffb3b3;font-weight:800}
+    .divider{height:1px; background: var(--line); margin:14px 0}
+    .big{font-size:18px}
   </style>
 </head>
 
 <body>
 
-  <!-- 🌌 VIDEO BACKGROUND -->
-  <video id="bg-video" autoplay muted loop playsinline preload="auto">
-    <source src="video.mp4" type="video/mp4">
-  </video>
+<!-- 🌌 Background video -->
+<video id="bgvideo" autoplay muted loop playsinline preload="auto">
+  <source src="video.mp4" type="video/mp4">
+</video>
+<div class="overlay"></div>
 
-  <div class="overlay"></div>
+<!-- 🎵 Music (your file) -->
+<audio id="bgm" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
 
-  <!-- 🎵 MUSIC -->
-  <audio id="music" src="music.mp3" autoplay loop></audio>
-
-  <!-- 🎉 CONFETTI -->
-  <canvas id="confetti"></canvas>
-
-  <!-- 💚 CONTENT -->
-  <div class="container">
-    <div class="card screen-enter" id="card">
-      <div class="number">1</div>
-      <h1>Hey Mayra 🤍</h1>
-      <p>
-        Esto no es un juego normal.  
-        Es algo que hice con calma, pensando en ti,
-        porque desde que llegaste… las cosas se sienten distintas.
-      </p>
-      <button onclick="next()">Continuar</button>
-    </div>
+<div class="card">
+  <div class="topbar">
+    <div><span class="dot"></span><span id="progress">1/1</span></div>
+    <div id="tag">último nivel</div>
   </div>
 
-  <script>
-    const screens = [
-      {
-        text: `
-          Hay personas que llegan haciendo ruido…  
-          y hay personas como tú, que llegan sin avisar  
-          y se quedan sin esfuerzo.
-        `
-      },
-      {
-        text: `
-          Contigo no siento prisa,  
-          siento ganas.
-          Ganas de quedarme, de escuchar,
-          de seguir descubriéndote poquito a poquito.
-        `
-      },
-      {
-        text: `
-          Pregunta sencilla:
-          <br><br>
-          ¿Qué es lo que más se me antoja cuando pienso en ti?
-        `,
-        answer: "verte"
-      },
-      {
-        text: `
-          No es intensidad,
-          es calma.
-          No es costumbre,
-          es elección.
-          <br><br>
-          ¿Qué crees que más valoro de lo que estamos construyendo?
-        `,
-        answer: "la honestidad"
-      },
-      {
-        text: `
-          Última pregunta normal…
-          <br><br>
-          ¿Sabes cuándo fue nuestra primera cita?
-          <br><br>
-          (escríbelo tal cual)
-        `,
-        answer: "18 de enero"
-      },
-      {
-        text: `
-          ✨ Desbloqueaste una pregunta secreta ✨
-          <br><br>
-          ¿Estás lista?
-        `,
-        confirm: true
-      },
-      {
-        text: `
-          ¿Segura segura?
-        `,
-        confirm: true
-      },
-      {
-        text: `
-          Última oportunidad…
-          <br><br>
-          ¿Lista de verdad?
-        `,
-        confirm: true
-      },
-      {
-        final: true
+  <h1 id="title"></h1>
+  <div id="content"></div>
+  <div class="btns" id="btns"></div>
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+const NAME = "Mayra";
+
+/* ===== MUSIC CONTROL (fade-in) ===== */
+const bgm = document.getElementById("bgm");
+let musicStarted = false;
+function startMusic(){
+  if (musicStarted) return;
+  musicStarted = true;
+  bgm.volume = 0;
+  bgm.play().catch(()=>{});
+  let v = 0;
+  const fade = setInterval(()=>{
+    v += 0.02;
+    bgm.volume = Math.min(v, 0.26);
+    if (v >= 0.26) clearInterval(fade);
+  }, 120);
+}
+
+/* ===== HELPERS ===== */
+let step = 0;
+function el(id){ return document.getElementById(id); }
+function go(n){ step = n; render(); }
+function normalize(s){
+  return (s||"").toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^\w\s]/g,"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+/* ===== FLOW =====
+   6 preguntas normales
+   + pregunta fecha (18 de Enero)
+   + desbloqueo
+   + lista x3
+   + propuesta
+*/
+const steps = [
+/* 0 INTRO */
+{
+  tag:"inicio",
+  title:`Hola, ${NAME}. 💚`,
+  html:`
+    <p class="muted">Ok… esto es algo chiquito, pero lo hice con intención.</p>
+    <p>Me gusta lo que estamos viviendo porque se siente fácil. No por “simple”, sino por real.</p>
+    <p>Así que te armé un juego rápido: bonito, inteligente, y muy nosotros. Sin presión.</p>
+    <div class="divider"></div>
+    <p class="muted">Reglas:</p>
+    <p class="muted">1) No te saltes nada.<br>2) Si sonríes, vas bien.<br>3) Si te pones nerviosa… yo también 😌</p>
+  `,
+  buttons:[{
+    text:"Empezar",
+    action:()=>{ startMusic(); go(1); }
+  }]
+},
+
+/* 1 Q1 */
+{
+  tag:"pregunta 1/6",
+  title:"Nivel 1 — Señal clarísima 😏",
+  html:`
+    <p>Empezamos suave, pero real.</p>
+    <p class="big"><b>¿Cuál es la señal más obvia de que me gustas?</b></p>
+    <p class="muted">No te asustes: todas son verdad… solo elige la que más te dé risa.</p>
+  `,
+  buttons:[
+    { text:"Me importa tu día de verdad", action:()=>go(2) },
+    { text:"Me dan ganas de verte aunque esté cansado", action:()=>go(2) },
+    { text:"Contigo me da paz (y eso no es común)", action:()=>go(2) }
+  ]
+},
+
+/* 2 Q2 */
+{
+  tag:"pregunta 2/6",
+  title:"Nivel 2 — Lectura fina 🧠",
+  html:`
+    <p class="muted">Esta es de esas que dicen mucho sin decirlo.</p>
+    <p class="big"><b>Cuando alguien te importa… ¿qué cambia?</b></p>
+    <p>Elige la opción más “nosotros”:</p>
+  `,
+  buttons:[
+    { text:"Dejas de fingir y te sientes tú", action:()=>go(3) },
+    { text:"Todo se vuelve más simple, pero más bonito", action:()=>go(3) },
+    { text:"Ya no buscas emoción… buscas calma", action:()=>go(3) }
+  ]
+},
+
+/* 3 Q3 (texto) */
+{
+  tag:"pregunta 3/6",
+  title:"Nivel 3 — Completa la frase",
+  html:`
+    <p>Quiero una respuesta tuya, no de opción múltiple 😌</p>
+    <p class="big"><b>Completa:</b> “Se siente ______ contigo.”</p>
+    <p class="muted">Una o dos palabras. Lo primero que te salga.</p>
+    <input id="a3" class="input" placeholder="Escríbelo aquí…" autocomplete="off">
+    <div id="fb3" class="hint">Tip: puede ser “fácil”, “bonito”, “real”, “en paz”…</div>
+  `,
+  buttons:[
+    { text:"Continuar", action:()=>{
+        const v = normalize(el("a3").value);
+        if(v.length >= 2) go(4);
+        else el("fb3").innerHTML = `<span class="no">Pon algo chiquito pero real 😌</span>`;
       }
-    ];
-
-    let index = 0;
-
-    function next() {
-      index++;
-      render();
+    },
+    { text:"Dame idea", secondary:true, action:()=>{
+        el("a3").value = "fácil y bonito";
+        el("fb3").innerHTML = `<span class="ok">Esooo.</span> Ahora sí.`;
+      }
     }
+  ]
+},
 
-    function render() {
-      const card = document.getElementById("card");
-      const s = screens[index];
+/* 4 Q4 */
+{
+  tag:"pregunta 4/6",
+  title:"Nivel 4 — La respuesta adulta 💚",
+  html:`
+    <p class="muted">Romántica sin ser cursi.</p>
+    <p class="big"><b>¿Qué te convence de algo bonito?</b></p>
+    <p>Elige:</p>
+  `,
+  buttons:[
+    { text:"Que se sienta natural, no forzado", action:()=>go(5) },
+    { text:"Que haya intención, no prisa", action:()=>go(5) },
+    { text:"Que haya paz… y ganas", action:()=>go(5) }
+  ]
+},
 
-      // Force re-trigger the enter animation every render
-      card.classList.remove("screen-enter");
-      // reflow
-      void card.offsetWidth;
-      card.classList.add("screen-enter");
+/* 5 Q5 */
+{
+  tag:"pregunta 5/6",
+  title:"Nivel 5 — Trampa bonita 😏",
+  html:`
+    <p class="muted">Si te ríes aquí, ya ganamos.</p>
+    <p class="big"><b>Si yo pudiera pedir un “power-up” para lo nuestro, sería:</b></p>
+    <p class="muted">Elige el que sienta más tú.</p>
+  `,
+  buttons:[
+    { text:"Más momentos simples que se sientan enormes", action:()=>go(6) },
+    { text:"Más besos… y menos miedo", action:()=>go(6) },
+    { text:"Más tú aquí… conmigo", action:()=>go(6) }
+  ]
+},
 
-      if (s.final) {
-        card.innerHTML = `
-          <div class="number">${index + 1}</div>
-          <h1>Mayra 💚</h1>
-          <p>
-            Daniel te va a preguntar algo…
-            <br><br>
-            (respira tantito 😌)
-          </p>
-          <p style="margin-top:-8px;">
-            ¿Quieres ser mi novia?
-          </p>
-          <div>
-            <button onclick="yes()">Sí</button>
-            <button onclick="nope()">No</button>
-          </div>
-        `;
-        return;
-      }
+/* 6 Q6 */
+{
+  tag:"pregunta 6/6",
+  title:"Nivel 6 — La más real",
+  html:`
+    <p>Última de las “normales”.</p>
+    <p class="big"><b>¿Cuál es la diferencia entre gustar y elegir?</b></p>
+    <p class="muted">No hay respuesta perfecta… pero sí una que se siente verdadera.</p>
+  `,
+  buttons:[
+    { text:"Gustar es emoción; elegir es intención", action:()=>go(7) },
+    { text:"Gustar es hoy; elegir es seguir mañana", action:()=>go(7) },
+    { text:"Gustar es fácil; elegir es cuidarlo", action:()=>go(7) }
+  ]
+},
 
-      card.innerHTML = `
-        <div class="number">${index + 1}</div>
-        <p>${s.text}</p>
-        ${
-          s.answer
-            ? `<input id="answer" placeholder="Escribe aquí" />
-               <button onclick="check('${s.answer}')">Continuar</button>`
-            : `<button onclick="next()">Continuar</button>`
+/* 7 DATE QUESTION */
+{
+  tag:"nivel extra",
+  title:"Nivel extra — Memoria del corazón 🗓️",
+  html:`
+    <p class="muted">Ok… esta sí importa.</p>
+    <p class="big"><b>¿Sabes cuándo fue nuestra primer cita?</b></p>
+    <p class="muted">Escríbelo así: “18 de Enero”.</p>
+    <input id="date" class="input" placeholder="18 de Enero" autocomplete="off">
+    <div id="fb7" class="hint">Tip: también sirve “18 enero”.</div>
+  `,
+  buttons:[
+    { text:"Confirmar", action:()=>{
+        const ans = normalize(el("date").value);
+        const ok = ans.includes("18") && (ans.includes("enero") || ans.includes("ene"));
+        if(ok){
+          el("fb7").innerHTML = `<span class="ok">Correcto.</span> 💚`;
+          setTimeout(()=>go(8), 650);
+        } else {
+          el("fb7").innerHTML = `<span class="no">Casi.</span> Pista: fue el <b>18</b>… de <b>Enero</b> 😏`;
         }
-      `;
-    }
-
-    function check(correct) {
-      const val = document.getElementById("answer").value.toLowerCase().trim();
-      if (val === correct) {
-        next();
-      } else {
-        alert("Piénsalo bonito 🤍");
+      }
+    },
+    { text:"Dame pista", secondary:true, action:()=>{
+        el("fb7").innerHTML = `Pista: número <b>18</b> + mes <b>Enero</b> 😉`;
       }
     }
+  ]
+},
 
-    /* ===== VIDEO: make it feel “slower” ===== */
-    const video = document.getElementById("bg-video");
-    function tryPlayVideo() {
-      video.playbackRate = 0.75; // 👈 más lento
-      return video.play();
-    }
+/* 8 UNLOCKED */
+{
+  tag:"🔓",
+  title:"Desbloqueaste una pregunta secreta",
+  html:`
+    <p class="big"><b>Ok… entonces sí te acuerdas.</b></p>
+    <p>Y si te acuerdas de eso, es porque lo que estamos viviendo importa.</p>
+    <p class="muted">No es un juego ya… pero quiero hacerlo bonito.</p>
+  `,
+  buttons:[{ text:"Siguiente", action:()=>go(9) }]
+},
 
-    tryPlayVideo().catch(() => {
-      document.addEventListener("click", () => {
-        tryPlayVideo().catch(()=>{});
-      }, { once:true });
-    });
+/* 9 READY 1 */
+{
+  tag:"…",
+  title:"Antes de continuar…",
+  html:`
+    <p class="big"><b>¿Estás lista?</b></p>
+    <p class="muted">Respira. No hay prisa.</p>
+  `,
+  buttons:[
+    { text:"Sí", action:()=>go(10) },
+    { text:"Espérame tantito", secondary:true, action:()=>{} }
+  ]
+},
 
-    /* ===== Confetti (green) ===== */
-    const canvas = document.getElementById("confetti");
-    const ctx = canvas.getContext("2d");
-    let confettiRunning = false;
-    let confettiPieces = [];
-    let confettiStart = 0;
+/* 10 READY 2 */
+{
+  tag:"…",
+  title:"Ok… ¿segura?",
+  html:`
+    <p class="big"><b>¿Lista de verdad?</b></p>
+    <p class="muted">Esta parte no se puede “desver” 😌</p>
+  `,
+  buttons:[
+    { text:"Sí, ya", action:()=>go(11) },
+    { text:"Me estás poniendo nerviosa", secondary:true, action:()=>go(11) }
+  ]
+},
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+/* 11 READY 3 */
+{
+  tag:"…",
+  title:"Última vez",
+  html:`
+    <p class="big"><b>Última confirmación:</b></p>
+    <p class="big"><b>¿Estás lista?</b></p>
+    <p class="muted">Yo sí.</p>
+  `,
+  buttons:[ { text:"Sí 😌", action:()=>go(12) } ]
+},
 
-    function makeConfetti() {
-      const greens = ["#0b3d2e", "#1b7a57", "#2f6f5a", "#49a078", "#7ae582"];
-      confettiPieces = Array.from({ length: 180 }).map(() => ({
-        x: Math.random() * canvas.width,
-        y: -20 - Math.random() * canvas.height * 0.2,
-        r: 3 + Math.random() * 5,
-        vx: -2 + Math.random() * 4,
-        vy: 2 + Math.random() * 5,
-        rot: Math.random() * Math.PI,
-        vr: -0.2 + Math.random() * 0.4,
-        color: greens[Math.floor(Math.random() * greens.length)],
-        alpha: 0.9
-      }));
-    }
+/* 12 PROPOSAL */
+{
+  tag:"final",
+  title:"Último nivel",
+  html:`
+    <p class="muted">Ya fuera de juego…</p>
+    <p>Me gusta cómo se siente estar contigo. Me gusta que contigo todo se siente más fácil, más real, más bonito.</p>
+    <p>No quiero correr. Solo quiero elegirte bien: con calma y con intención.</p>
+    <div class="divider"></div>
+    <p class="big"><b>${NAME}… ¿quieres ser mi novia?</b></p>
+  `,
+  buttons:[
+    { text:"Sí 💚", action:()=>go(13) },
+    { text:"Obvio sí 😭💚", action:()=>go(13) }
+  ]
+},
 
-    function drawConfetti(t) {
-      if (!confettiRunning) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+/* 13 CELEBRATION */
+{
+  tag:"✅",
+  title:"Checkpoint desbloqueado",
+  html:`
+    <p class="ok">Logro desbloqueado: <b>Novios</b> 💚</p>
+    <p class="muted">Recompensa inmediata:</p>
+    <p>1) Abrazo<br>2) Beso<br>3) “Ok ya… ven acá” 😏</p>
+    <div class="divider"></div>
+    <p class="muted">Fin del juego. Inicio de lo bueno.</p>
+  `,
+  buttons:[ { text:"Fin", action:()=>alert("💚") } ]
+}
+];
 
-      confettiPieces.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rot += p.vr;
-        p.vy += 0.02; // gravity
-        p.alpha *= 0.995;
+function render(){
+  const s = steps[step];
+  el("tag").textContent = s.tag || "último nivel";
+  el("progress").textContent = `${step+1}/${steps.length}`;
+  el("title").textContent = s.title || "";
+  el("content").innerHTML = s.html || "";
 
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, p.alpha);
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
-        ctx.restore();
-      });
+  const btns = el("btns");
+  btns.innerHTML = "";
+  (s.buttons||[]).forEach(b=>{
+    const x = document.createElement("button");
+    x.textContent = b.text;
+    if (b.secondary) x.classList.add("secondary");
+    x.onclick = b.action || (()=>go(b.next));
+    btns.appendChild(x);
+  });
+}
 
-      // stop after ~3.5s
-      if (performance.now() - confettiStart > 3500) {
-        confettiRunning = false;
-        canvas.style.display = "none";
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        return;
-      }
-      requestAnimationFrame(drawConfetti);
-    }
-
-    function popConfetti() {
-      resizeCanvas();
-      canvas.style.display = "block";
-      confettiRunning = true;
-      confettiStart = performance.now();
-      makeConfetti();
-      requestAnimationFrame(drawConfetti);
-    }
-
-    function yes() {
-      popConfetti();
-      const card = document.getElementById("card");
-      // keep it romantic after confetti
-      setTimeout(() => {
-        card.classList.remove("screen-enter");
-        void card.offsetWidth;
-        card.classList.add("screen-enter");
-        card.innerHTML = `
-          <div class="number">💚</div>
-          <h1>AAAAA 😭💚</h1>
-          <p>
-            Ok… oficialmente me haces muy feliz.
-            <br><br>
-            Gracias por dejarme cuidarte bonito,
-            por reírte conmigo,
-            y por hacer que lo simple se sienta especial.
-          </p>
-          <p style="opacity:.9;margin-top:-4px;">
-            (ven pa’ acá 🫶)
-          </p>
-        `;
-      }, 650);
-    }
-
-    function nope() {
-      alert("Jajaj ok, pero igual te tengo aquí conmigo 🤍 (pícale 'Sí' mejor 😌)");
-    }
-  </script>
-
+render();
+</script>
 </body>
 </html>
