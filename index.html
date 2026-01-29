@@ -12,6 +12,9 @@
       --muted:#b7d9c9;
       --line:#0e2f25;
       --accent:#31c48d;
+      --accent2:#6ef2c1;
+      --warn:#ffb3b3;
+      --card: rgba(255,255,255,.035);
     }
     *{box-sizing:border-box}
 
@@ -34,7 +37,7 @@
       min-height:100%;
       width:auto;
       height:auto;
-      z-index:-2;
+      z-index:-3;
       object-fit:cover;
       filter: blur(2px) brightness(.50) contrast(1.12);
       opacity:.20; /* sutil */
@@ -43,34 +46,125 @@
     /* capa para mantener el mood verde oscuro y legibilidad */
     .overlay{
       position:fixed; inset:0;
-      z-index:-1;
+      z-index:-2;
       background: radial-gradient(1200px 700px at 50% 35%,
         rgba(10,42,31,.55) 0%,
         rgba(6,17,13,.86) 55%,
         rgba(3,10,7,.93) 100%);
     }
 
+    /* ====== CONFETTI CANVAS ====== */
+    #confetti{
+      position:fixed; inset:0;
+      z-index:3;
+      pointer-events:none;
+      display:none;
+    }
+
     /* ====== CARD ====== */
     .card{
-      width:min(760px,100%);
-      background: rgba(255,255,255,.03);
+      width:min(820px,100%);
+      background: var(--card);
       border:1px solid var(--line);
-      border-radius:20px;
-      padding:22px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.45);
-      backdrop-filter: blur(8px);
+      border-radius:22px;
+      padding:18px 18px 20px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+
+      /* micro glow fino */
+      position:relative;
+      overflow:hidden;
     }
+
+    .card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(500px 200px at 20% 10%, rgba(49,196,141,.18), transparent 60%),
+        radial-gradient(600px 240px at 85% 15%, rgba(110,242,193,.14), transparent 62%),
+        radial-gradient(600px 300px at 50% 100%, rgba(49,196,141,.10), transparent 60%);
+      pointer-events:none;
+      filter: blur(10px);
+      opacity:.85;
+    }
+
+    .inner{
+      position:relative;
+      z-index:1;
+    }
+
     .topbar{
       display:flex; justify-content:space-between; align-items:center;
       font-size:12px; letter-spacing:.15em; text-transform:uppercase;
       color:var(--muted); margin-bottom:10px;
+      gap:12px;
     }
+
+    .leftpack{
+      display:flex; align-items:center; gap:10px;
+      min-width:200px;
+    }
+
     .dot{
       width:8px;height:8px;border-radius:999px;
       background:var(--accent);
-      box-shadow:0 0 16px rgba(49,196,141,.6);
-      display:inline-block;margin-right:8px;
+      box-shadow:0 0 18px rgba(49,196,141,.55);
+      display:inline-block;
     }
+
+    /* ====== PROGRESS + XP ====== */
+    .hud{
+      display:flex; align-items:center; gap:12px;
+      justify-content:flex-end;
+      flex:1;
+    }
+
+    .barwrap{
+      width:min(360px, 48vw);
+      height:10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      overflow:hidden;
+      position:relative;
+    }
+    .barfill{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(49,196,141,.35), rgba(110,242,193,.55));
+      box-shadow:0 0 18px rgba(49,196,141,.35);
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+    .xp{
+      font-size:11px;
+      letter-spacing:.12em;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .xp b{ color: var(--ink); letter-spacing:.08em; }
+
+    /* checkpoints */
+    .checkpoints{
+      display:flex; gap:6px; align-items:center;
+    }
+    .cp{
+      width:10px;height:10px;border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      box-shadow:none;
+      transition: transform .2s ease, background .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .cp.on{
+      background: rgba(49,196,141,.55);
+      border-color: rgba(49,196,141,.55);
+      box-shadow:0 0 16px rgba(49,196,141,.35);
+      transform: translateY(-1px);
+    }
+    .cp.key{
+      width:12px;height:12px;
+    }
+
     h1{margin:0 0 10px;font-size:22px; letter-spacing:.2px}
     p{margin:10px 0;line-height:1.62}
     .muted{color:var(--muted);font-size:14px}
@@ -83,9 +177,12 @@
       border-radius:14px;
       font-weight:700;
       cursor:pointer;
-      transition: transform .06s ease, background .2s ease;
+      transition: transform .06s ease, background .2s ease, box-shadow .2s ease;
     }
-    button:hover{background: rgba(49,196,141,.25)}
+    button:hover{
+      background: rgba(49,196,141,.25);
+      box-shadow:0 0 18px rgba(49,196,141,.08);
+    }
     button:active{transform: translateY(1px)}
     button.secondary{ background: transparent; color:var(--muted); }
     button.secondary:hover{background: rgba(255,255,255,.03); color:var(--ink)}
@@ -99,9 +196,39 @@
     }
     .hint{margin-top:10px;font-size:13px;color:var(--muted)}
     .ok{color:#7CFCB2;font-weight:800}
-    .no{color:#ffb3b3;font-weight:800}
+    .no{color:var(--warn);font-weight:800}
     .divider{height:1px; background: var(--line); margin:14px 0}
     .big{font-size:18px}
+
+    /* ====== TRANSITION ====== */
+    .stage{
+      opacity:0;
+      transform: translateY(10px);
+      filter: blur(0px);
+      transition: opacity .28s ease, transform .28s ease;
+      will-change: opacity, transform;
+    }
+    .stage.in{
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* ====== GLITCH / ERROR SCREEN ====== */
+    .errorBox{
+      border:1px solid rgba(255,179,179,.35);
+      background: rgba(255,179,179,.06);
+      border-radius:16px;
+      padding:14px;
+      box-shadow: 0 0 22px rgba(255,179,179,.08);
+    }
+    .errorTitle{
+      font-weight:900;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin:0 0 6px;
+      color:var(--warn);
+    }
+    .small{font-size:13px;color:var(--muted)}
   </style>
 </head>
 
@@ -113,20 +240,38 @@
 </video>
 <div class="overlay"></div>
 
+<canvas id="confetti"></canvas>
+
 <!-- 🎵 Music (your file) -->
 <audio id="bgm" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<div class="card">
-  <div class="topbar">
-    <div><span class="dot"></span><span id="progress">1/1</span></div>
-    <div id="tag">último nivel</div>
-  </div>
+<div class="card" role="application" aria-label="Último Nivel">
+  <div class="inner">
+    <div class="topbar">
+      <div class="leftpack">
+        <span class="dot"></span>
+        <span id="tag">inicio</span>
+      </div>
 
-  <h1 id="title"></h1>
-  <div id="content"></div>
-  <div class="btns" id="btns"></div>
+      <div class="hud">
+        <div class="checkpoints" id="checkpoints" aria-label="Checkpoints"></div>
+        <div class="barwrap" aria-label="Progreso">
+          <div class="barfill" id="barfill"></div>
+        </div>
+        <div class="xp" id="xp">XP <b>0</b></div>
+      </div>
+    </div>
+
+    <h1 id="title"></h1>
+
+    <!-- stage wrapper for animation -->
+    <div id="stage" class="stage">
+      <div id="content"></div>
+      <div class="btns" id="btns"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -151,23 +296,169 @@ function startMusic(){
 
 /* ===== HELPERS ===== */
 let step = 0;
+let xp = 0;
 function el(id){ return document.getElementById(id); }
-function go(n){ step = n; render(); }
+function go(n){
+  step = Math.max(0, Math.min(n, steps.length-1));
+  render(true);
+}
 function normalize(s){
   return (s||"").toLowerCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^\w\s]/g,"")
+    .replace(/[^\w\s\/\.\-]/g," ") // deja / . - para fechas
     .replace(/\s+/g," ")
     .trim();
 }
 
-/* ===== FLOW =====
-   6 preguntas normales
-   + pregunta fecha (18 de Enero)
-   + desbloqueo
-   + lista x3
-   + propuesta
-*/
+/* ===== PROGRESS/XP/CHECKPOINTS ===== */
+const totalSteps = () => steps.length;
+const maxXP = 1000;
+
+function stepToXP(n){
+  // XP no lineal: al principio sube suave, al final sube más (más “gamer”)
+  const t = (n) / (totalSteps()-1);
+  const eased = t*t*(3 - 2*t); // smoothstep
+  return Math.round(eased * maxXP);
+}
+
+const checkpointSteps = new Set([
+  0, 3, 7, 12, 13 // intro, frase, fecha, propuesta, novios
+]);
+
+function renderHUD(){
+  // tag
+  el("tag").textContent = steps[step].tag || "último nivel";
+
+  // progress bar (real %)
+  const pct = Math.round((step / (totalSteps()-1)) * 100);
+  el("barfill").style.width = `${pct}%`;
+
+  // XP
+  xp = Math.max(xp, stepToXP(step));
+  el("xp").innerHTML = `XP <b>${xp}</b>`;
+
+  // checkpoints UI
+  const cpWrap = el("checkpoints");
+  cpWrap.innerHTML = "";
+  const cpSteps = Array.from(checkpointSteps).sort((a,b)=>a-b);
+
+  cpSteps.forEach((s, idx)=>{
+    const dot = document.createElement("div");
+    dot.className = "cp" + (idx === 2 ? " key" : ""); // uno “key” al medio
+    if (step >= s) dot.classList.add("on");
+    dot.title = `Checkpoint ${idx+1}`;
+    cpWrap.appendChild(dot);
+  });
+}
+
+/* ===== DATE PARSING (flexible) ===== */
+function isFirstDateCorrect(inputRaw){
+  const s0 = normalize(inputRaw);
+
+  if(!s0) return false;
+
+  // 1) variants like: "18 de enero", "18 enero", "18 ene", "18/enero", "18-ene", "18.ene"
+  const has18 = /\b18\b/.test(s0) || /^18[\/\.\- ]/.test(s0);
+  const hasEnero = /\benero\b/.test(s0) || /\bene\b/.test(s0);
+
+  if (has18 && hasEnero) return true;
+
+  // 2) numeric formats like: 18/01, 18-01, 18.01, 18/1
+  // also allow 01/18? (but better keep strict to avoid confusion)
+  const num = s0.replace(/\s/g,"");
+  if (/^18[\/\.\-]0?1$/.test(num)) return true;
+
+  // 3) english fallback
+  if ((/\b18\b/.test(s0) || /^18[\/\.\- ]/.test(s0)) && /\bjanuary\b/.test(s0)) return true;
+
+  return false;
+}
+
+/* ===== CONFETTI ===== */
+const confettiCanvas = el("confetti");
+const ctx = confettiCanvas.getContext("2d");
+let confettiRunning = false;
+let confettiParts = [];
+
+function resizeConfetti(){
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeConfetti);
+
+function startConfetti(){
+  resizeConfetti();
+  confettiCanvas.style.display = "block";
+  confettiRunning = true;
+  confettiParts = [];
+
+  const count = 180;
+  for(let i=0;i<count;i++){
+    confettiParts.push({
+      x: Math.random()*confettiCanvas.width,
+      y: -20 - Math.random()*confettiCanvas.height*0.3,
+      r: 2 + Math.random()*4,
+      vy: 2 + Math.random()*5,
+      vx: -1.5 + Math.random()*3,
+      w: 6 + Math.random()*10,
+      h: 6 + Math.random()*10,
+      rot: Math.random()*Math.PI,
+      vr: -0.12 + Math.random()*0.24,
+      a: 0.9 + Math.random()*0.1,
+      shape: Math.random() > 0.5 ? "rect" : "circle"
+    });
+  }
+
+  let frames = 0;
+  function tick(){
+    if (!confettiRunning) return;
+    frames++;
+
+    ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+
+    for(const p of confettiParts){
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+
+      // wrap
+      if (p.x < -30) p.x = confettiCanvas.width + 30;
+      if (p.x > confettiCanvas.width + 30) p.x = -30;
+
+      // draw (no fixed colors: use accent range via alpha only)
+      ctx.save();
+      ctx.globalAlpha = p.a;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+
+      // draw using current fillStyle (default) but randomize brightness via alpha
+      ctx.fillStyle = "rgba(231,255,244,.8)"; // ink-ish (stays on brand)
+      if (p.shape === "rect"){
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0,0,p.r,0,Math.PI*2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // auto stop after ~3.5s
+    if (frames > 210){
+      stopConfetti();
+      return;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+function stopConfetti(){
+  confettiRunning = false;
+  ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+  confettiCanvas.style.display = "none";
+}
+
+/* ===== FLOW ===== */
 const steps = [
 /* 0 INTRO */
 {
@@ -197,235 +488,4 @@ const steps = [
     <p class="muted">No te asustes: todas son verdad… solo elige la que más te dé risa.</p>
   `,
   buttons:[
-    { text:"Me importa tu día de verdad", action:()=>go(2) },
-    { text:"Me dan ganas de verte aunque esté cansado", action:()=>go(2) },
-    { text:"Contigo me da paz (y eso no es común)", action:()=>go(2) }
-  ]
-},
-
-/* 2 Q2 */
-{
-  tag:"pregunta 2/6",
-  title:"Nivel 2 — Lectura fina 🧠",
-  html:`
-    <p class="muted">Esta es de esas que dicen mucho sin decirlo.</p>
-    <p class="big"><b>Cuando alguien te importa… ¿qué cambia?</b></p>
-    <p>Elige la opción más “nosotros”:</p>
-  `,
-  buttons:[
-    { text:"Dejas de fingir y te sientes tú", action:()=>go(3) },
-    { text:"Todo se vuelve más simple, pero más bonito", action:()=>go(3) },
-    { text:"Ya no buscas emoción… buscas calma", action:()=>go(3) }
-  ]
-},
-
-/* 3 Q3 (texto) */
-{
-  tag:"pregunta 3/6",
-  title:"Nivel 3 — Completa la frase",
-  html:`
-    <p>Quiero una respuesta tuya, no de opción múltiple 😌</p>
-    <p class="big"><b>Completa:</b> “Se siente ______ contigo.”</p>
-    <p class="muted">Una o dos palabras. Lo primero que te salga.</p>
-    <input id="a3" class="input" placeholder="Escríbelo aquí…" autocomplete="off">
-    <div id="fb3" class="hint">Tip: puede ser “fácil”, “bonito”, “real”, “en paz”…</div>
-  `,
-  buttons:[
-    { text:"Continuar", action:()=>{
-        const v = normalize(el("a3").value);
-        if(v.length >= 2) go(4);
-        else el("fb3").innerHTML = `<span class="no">Pon algo chiquito pero real 😌</span>`;
-      }
-    },
-    { text:"Dame idea", secondary:true, action:()=>{
-        el("a3").value = "fácil y bonito";
-        el("fb3").innerHTML = `<span class="ok">Esooo.</span> Ahora sí.`;
-      }
-    }
-  ]
-},
-
-/* 4 Q4 */
-{
-  tag:"pregunta 4/6",
-  title:"Nivel 4 — La respuesta adulta 💚",
-  html:`
-    <p class="muted">Romántica sin ser cursi.</p>
-    <p class="big"><b>¿Qué te convence de algo bonito?</b></p>
-    <p>Elige:</p>
-  `,
-  buttons:[
-    { text:"Que se sienta natural, no forzado", action:()=>go(5) },
-    { text:"Que haya intención, no prisa", action:()=>go(5) },
-    { text:"Que haya paz… y ganas", action:()=>go(5) }
-  ]
-},
-
-/* 5 Q5 */
-{
-  tag:"pregunta 5/6",
-  title:"Nivel 5 — Trampa bonita 😏",
-  html:`
-    <p class="muted">Si te ríes aquí, ya ganamos.</p>
-    <p class="big"><b>Si yo pudiera pedir un “power-up” para lo nuestro, sería:</b></p>
-    <p class="muted">Elige el que sienta más tú.</p>
-  `,
-  buttons:[
-    { text:"Más momentos simples que se sientan enormes", action:()=>go(6) },
-    { text:"Más besos… y menos miedo", action:()=>go(6) },
-    { text:"Más tú aquí… conmigo", action:()=>go(6) }
-  ]
-},
-
-/* 6 Q6 */
-{
-  tag:"pregunta 6/6",
-  title:"Nivel 6 — La más real",
-  html:`
-    <p>Última de las “normales”.</p>
-    <p class="big"><b>¿Cuál es la diferencia entre gustar y elegir?</b></p>
-    <p class="muted">No hay respuesta perfecta… pero sí una que se siente verdadera.</p>
-  `,
-  buttons:[
-    { text:"Gustar es emoción; elegir es intención", action:()=>go(7) },
-    { text:"Gustar es hoy; elegir es seguir mañana", action:()=>go(7) },
-    { text:"Gustar es fácil; elegir es cuidarlo", action:()=>go(7) }
-  ]
-},
-
-/* 7 DATE QUESTION */
-{
-  tag:"nivel extra",
-  title:"Nivel extra — Memoria del corazón 🗓️",
-  html:`
-    <p class="muted">Ok… esta sí importa.</p>
-    <p class="big"><b>¿Sabes cuándo fue nuestra primer cita?</b></p>
-    <p class="muted">Escríbelo así: “18 de Enero”.</p>
-    <input id="date" class="input" placeholder="18 de Enero" autocomplete="off">
-    <div id="fb7" class="hint">Tip: también sirve “18 enero”.</div>
-  `,
-  buttons:[
-    { text:"Confirmar", action:()=>{
-        const ans = normalize(el("date").value);
-        const ok = ans.includes("18") && (ans.includes("enero") || ans.includes("ene"));
-        if(ok){
-          el("fb7").innerHTML = `<span class="ok">Correcto.</span> 💚`;
-          setTimeout(()=>go(8), 650);
-        } else {
-          el("fb7").innerHTML = `<span class="no">Casi.</span> Pista: fue el <b>18</b>… de <b>Enero</b> 😏`;
-        }
-      }
-    },
-    { text:"Dame pista", secondary:true, action:()=>{
-        el("fb7").innerHTML = `Pista: número <b>18</b> + mes <b>Enero</b> 😉`;
-      }
-    }
-  ]
-},
-
-/* 8 UNLOCKED */
-{
-  tag:"🔓",
-  title:"Desbloqueaste una pregunta secreta",
-  html:`
-    <p class="big"><b>Ok… entonces sí te acuerdas.</b></p>
-    <p>Y si te acuerdas de eso, es porque lo que estamos viviendo importa.</p>
-    <p class="muted">No es un juego ya… pero quiero hacerlo bonito.</p>
-  `,
-  buttons:[{ text:"Siguiente", action:()=>go(9) }]
-},
-
-/* 9 READY 1 */
-{
-  tag:"…",
-  title:"Antes de continuar…",
-  html:`
-    <p class="big"><b>¿Estás lista?</b></p>
-    <p class="muted">Respira. No hay prisa.</p>
-  `,
-  buttons:[
-    { text:"Sí", action:()=>go(10) },
-    { text:"Espérame tantito", secondary:true, action:()=>{} }
-  ]
-},
-
-/* 10 READY 2 */
-{
-  tag:"…",
-  title:"Ok… ¿segura?",
-  html:`
-    <p class="big"><b>¿Lista de verdad?</b></p>
-    <p class="muted">Esta parte no se puede “desver” 😌</p>
-  `,
-  buttons:[
-    { text:"Sí, ya", action:()=>go(11) },
-    { text:"Me estás poniendo nerviosa", secondary:true, action:()=>go(11) }
-  ]
-},
-
-/* 11 READY 3 */
-{
-  tag:"…",
-  title:"Última vez",
-  html:`
-    <p class="big"><b>Última confirmación:</b></p>
-    <p class="big"><b>¿Estás lista?</b></p>
-    <p class="muted">Yo sí.</p>
-  `,
-  buttons:[ { text:"Sí 😌", action:()=>go(12) } ]
-},
-
-/* 12 PROPOSAL */
-{
-  tag:"final",
-  title:"Último nivel",
-  html:`
-    <p class="muted">Ya fuera de juego…</p>
-    <p>Me gusta cómo se siente estar contigo. Me gusta que contigo todo se siente más fácil, más real, más bonito.</p>
-    <p>No quiero correr. Solo quiero elegirte bien: con calma y con intención.</p>
-    <div class="divider"></div>
-    <p class="big"><b>${NAME}… ¿quieres ser mi novia?</b></p>
-  `,
-  buttons:[
-    { text:"Sí 💚", action:()=>go(13) },
-    { text:"Obvio sí 😭💚", action:()=>go(13) }
-  ]
-},
-
-/* 13 CELEBRATION */
-{
-  tag:"✅",
-  title:"Checkpoint desbloqueado",
-  html:`
-    <p class="ok">Logro desbloqueado: <b>Novios</b> 💚</p>
-    <p class="muted">Recompensa inmediata:</p>
-    <p>1) Abrazo<br>2) Beso<br>3) “Ok ya… ven acá” 😏</p>
-    <div class="divider"></div>
-    <p class="muted">Fin del juego. Inicio de lo bueno.</p>
-  `,
-  buttons:[ { text:"Fin", action:()=>alert("💚") } ]
-}
-];
-
-function render(){
-  const s = steps[step];
-  el("tag").textContent = s.tag || "último nivel";
-  el("progress").textContent = `${step+1}/${steps.length}`;
-  el("title").textContent = s.title || "";
-  el("content").innerHTML = s.html || "";
-
-  const btns = el("btns");
-  btns.innerHTML = "";
-  (s.buttons||[]).forEach(b=>{
-    const x = document.createElement("button");
-    x.textContent = b.text;
-    if (b.secondary) x.classList.add("secondary");
-    x.onclick = b.action || (()=>go(b.next));
-    btns.appendChild(x);
-  });
-}
-
-render();
-</script>
-</body>
-</html>
+    {
