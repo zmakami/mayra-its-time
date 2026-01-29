@@ -236,30 +236,29 @@
     }
 
     /* ✅ UPDATED: forest green + deeper glow */
-    .heart{
-      width:46px;
-      height:46px;
-      position:relative;
-      transform: rotate(-45deg);
-      background: rgba(18, 92, 68, .96);
-      box-shadow:
-        0 0 12px rgba(18, 92, 68, .45),
-        0 0 38px rgba(18, 92, 68, .25),
-        0 0 80px rgba(18, 92, 68, .15);
-      animation: heartbeat 1.05s ease-in-out infinite;
-      border-radius:10px;
-      margin: 0 auto;
-    }
+  .heart{
+  width:46px;
+  height:46px;
+  position:relative;
+  transform: rotate(-45deg);
+  background: rgba(110, 38, 38, .96);
+  box-shadow:
+    0 0 12px rgba(110, 38, 38, .45),
+    0 0 38px rgba(110, 38, 38, .25),
+    0 0 80px rgba(110, 38, 38, .15);
+  animation: heartbeat 1.05s ease-in-out infinite;
+  border-radius:10px;
+}
 
-    .heart::before,
-    .heart::after{
-      content:"";
-      position:absolute;
-      width:46px;
-      height:46px;
-      background: rgba(18, 92, 68, .96);
-      border-radius:50%;
-    }
+.heart::before,
+.heart::after{
+  content:"";
+  position:absolute;
+  width:46px;
+  height:46px;
+  background: rgba(110, 38, 38, .96);
+  border-radius:50%;
+}
 
     .heart::before{ top:-23px; left:0; }
     .heart::after{ left:23px; top:0; }
